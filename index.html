@@ -1,23 +1,110 @@
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-            <meta charset="utf-8">
-            <title>My first three.js app</title>
-            <style>
-                /* body { margin: 0; } */
-                html, body {
-                  margin: 0;
-                  height: 100%;
-                }
-                #c {
-                  width: 100%;
-                  height: 100%;
-                  display: block;
-                }
-            </style>
-	</head>
-	<body>
-            <script type="module" src="./main.js"></script>
-            <canvas id="c"></canvas>
-	</body>
+<head>
+    <meta charset="utf-8">
+    <title>SimFace</title>
+    <!-- Bootstrap CSS CDN -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        html, body {
+            margin: 0;
+            height: 100%;
+        }
+        #c {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+        body {
+            padding-top: 56px; /* Adjust if needed to match navbar height */
+        }
+        #dragModeButton {
+            z-index: 1001; /* Ensure it is above the canvas */
+        }
+        .navbar-brand-center {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        .procedure-panel {
+            position: fixed;
+            right: 50px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 240px;
+            background-color: #f8f9fa;
+            border: 1px solid #ddd;
+            padding: 20px;
+            /* box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); */
+            z-index: 1001; /* Ensure it is above the canvas */
+        }
+        .procedure-panel h5 {
+            margin-top: 0;
+        }
+        .procedure-panel .slider {
+            width: 100%;
+        }
+    </style>
+</head>
+
+
+<body>
+
+    <!-- Bootstrap Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
+        <div class="container">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Settings</a>
+                </li>
+            </ul>
+            <a class="navbar-brand navbar-brand-center" href="#">SimFace</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Analysis</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Load</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Print Out</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <canvas id="c"></canvas>
+
+    <div class="procedure-panel">
+        <h5>Procedure</h5>
+        <!-- <p>Select a region to modify</p> -->
+        <p>Annotate points on face</p>
+        <input type="button" value="Fit Curve" id="fit-curve">
+        <p></p>
+        <p>Drag the slide bar to change the shape</p>
+        <input type="range" class="slider" min="0" max="100" value="50">
+        <p>Step</p>
+        <input type="number" class="form-control" value="0.0" step="0.1">
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" value="" id="volumeAreas">
+            <label class="form-check-label" for="volumeAreas">
+                Volume areas
+            </label>
+        </div>
+    </div>
+
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script type="module" src="./main.js"></script>
+</body>
 </html>
+
+
