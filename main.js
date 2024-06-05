@@ -113,7 +113,7 @@ function exportToOBJ(points) {
 
 // projectCurveToSurface() 函式：將曲線投影到3D面上
 function projectCurveToSurface(curvePoints, surfaceMesh) {
-    console.log("projectCurveToSurface");
+    console.log("projectCurveToSurface() called");
     const projectedPoints = [];
 
     // 遍歷曲線上的每個點
@@ -130,18 +130,100 @@ function projectCurveToSurface(curvePoints, surfaceMesh) {
 }
 
 
-// selectCheekSurface() 函式：選擇並截取臉頰表面
+// Helper class for Point
+class Point {
+    constructor(x, y, z) {
+        this.x = x;
+        this.y = y;
+        this.z = z;
+    }
+}
+
+
+// Helper function to determine if a 3D point is inside the polygon projected onto a 2D plane
+function point_in_polygon(point, polygon) {
+    const num_vertices = polygon.length;
+    const x = point.x;
+    const y = point.y;
+    let inside = false;
+
+    let p1 = polygon[0];
+    let p2;
+
+    for (let i = 1; i <= num_vertices; i++) {
+        p2 = polygon[i % num_vertices];
+
+        if (y > Math.min(p1.y, p2.y)) {
+            if (y <= Math.max(p1.y, p2.y)) {
+                if (x <= Math.max(p1.x, p2.x)) {
+                    const x_intersection = ((y - p1.y) * (p2.x - p1.x)) / (p2.y - p1.y) + p1.x;
+
+                    if (p1.x === p2.x || x <= x_intersection) {
+                        inside = !inside;
+                    }
+                }
+            }
+        }
+
+        p1 = p2;
+    }
+
+    return inside;
+}
+
+
+// Updated selectCheekSurface function
 function selectCheekSurface(projectedPoints, surfaceMesh) {
-    console.log("selectCheekSurface");
+    console.log("selectCheekSurface() called");
+
+    // Convert projected points to 2D Points
+    const polygon2D = projectedPoints.map(p => new Point(p.x, p.y));
+
+    // Create an empty geometry for the cheek
     const cheekGeometry = new THREE.BufferGeometry();
+    const vertices = [];
+    const indices = [];
 
-    // 这里假设你已经知道如何从原始面几何体中提取出定义在projectedPoints内的表面
-    // 具体实现需要根据具体的应用需求和数据结构来完成
-    // 例如，可以使用点在多边形中的算法，选择包含在projectedPoints内的所有面
+    // Get the position attribute of the surface mesh geometry
+    const position = surfaceMesh.geometry.attributes.position;
+    const faces = surfaceMesh.geometry.index.array;
+    const numFaces = faces.length / 3;
 
-    // 將幾何體添加到場景中
+    // Iterate through each face of the surface mesh
+    for (let i = 0; i < numFaces; i++) {
+        const a = faces[i * 3];
+        const b = faces[i * 3 + 1];
+        const c = faces[i * 3 + 2];
+
+        const vA = new THREE.Vector3().fromBufferAttribute(position, a);
+        const vB = new THREE.Vector3().fromBufferAttribute(position, b);
+        const vC = new THREE.Vector3().fromBufferAttribute(position, c);
+
+        // Convert 3D points to 2D for point-in-polygon check
+        const pointA2D = new Point(vA.x, vA.y);
+        const pointB2D = new Point(vB.x, vB.y);
+        const pointC2D = new Point(vC.x, vC.y);
+
+        // Check if all vertices of the face are inside the projected polygon
+        if (point_in_polygon(pointA2D, polygon2D) && point_in_polygon(pointB2D, polygon2D) && point_in_polygon(pointC2D, polygon2D)) {
+            // Add vertices and indices to the cheek geometry
+            const indexOffset = vertices.length / 3;
+            vertices.push(vA.x, vA.y, vA.z);
+            vertices.push(vB.x, vB.y, vB.z);
+            vertices.push(vC.x, vC.y, vC.z);
+            indices.push(indexOffset, indexOffset + 1, indexOffset + 2);
+        }
+    }
+
+    // Set vertices and indices to the cheek geometry
+    cheekGeometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
+    cheekGeometry.setIndex(indices);
+
+    // Create a material and mesh for the cheek
     const material = new THREE.MeshBasicMaterial({ color: 0xADD8E6, side: THREE.DoubleSide });
     const cheekMesh = new THREE.Mesh(cheekGeometry, material);
+
+    // Add the cheek mesh to the scene
     scene.add(cheekMesh);
 
     return cheekMesh;
