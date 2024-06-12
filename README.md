@@ -9,6 +9,7 @@ SimFace focuses on simulating and visualizing patients' facelifts, where users w
 - [Installation](#installation)
 - [Usage](#usage)
 - [Contributing](#contributing)
+- [License](#license)
 
 ## Features
 - Upload and visualize 3D face models
@@ -65,3 +66,7 @@ We welcome contributions! Please follow these steps to contribute:
 3. Make your changes and commit them (`git commit -m 'Add some feature'`).
 4. Push to the branch (`git push origin feature/your-feature`).
 5. Open a Pull Request.
+
+## License
+This project is licensed and restricted to A-TOP Health BIOTECH, Ltd. Unauthorized use, distribution, or modification of this project is prohibited.
+
