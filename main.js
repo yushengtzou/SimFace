@@ -172,24 +172,30 @@ function point_in_polygon(point, polygon) {
 }
 
 
-// Updated selectCheekSurface function
+// selectCheekSurface 函式：
 function selectCheekSurface(projectedPoints, surfaceMesh) {
     console.log("selectCheekSurface() called");
 
-    // Convert projected points to 2D Points
+    // 檢查 surfaceMesh 是否具有幾何屬性
+    if (!surfaceMesh || !surfaceMesh.geometry) {
+        console.error("surfaceMesh 或其 geometry 屬性未正確初始化");
+        return null;
+    }
+
+    // 將投影點轉換為 2D 點
     const polygon2D = projectedPoints.map(p => new Point(p.x, p.y));
 
-    // Create an empty geometry for the cheek
+    // 創建一個空的臉頰幾何體
     const cheekGeometry = new THREE.BufferGeometry();
     const vertices = [];
     const indices = [];
 
-    // Get the position attribute of the surface mesh geometry
+    // 獲取 surfaceMesh 幾何體的位置屬性
     const position = surfaceMesh.geometry.attributes.position;
     const faces = surfaceMesh.geometry.index.array;
     const numFaces = faces.length / 3;
 
-    // Iterate through each face of the surface mesh
+    // 遍歷 surfaceMesh 的每個面
     for (let i = 0; i < numFaces; i++) {
         const a = faces[i * 3];
         const b = faces[i * 3 + 1];
@@ -199,14 +205,14 @@ function selectCheekSurface(projectedPoints, surfaceMesh) {
         const vB = new THREE.Vector3().fromBufferAttribute(position, b);
         const vC = new THREE.Vector3().fromBufferAttribute(position, c);
 
-        // Convert 3D points to 2D for point-in-polygon check
+        // 將 3D 點轉換為 2D 以進行點在多邊形內檢查
         const pointA2D = new Point(vA.x, vA.y);
         const pointB2D = new Point(vB.x, vB.y);
         const pointC2D = new Point(vC.x, vC.y);
 
-        // Check if all vertices of the face are inside the projected polygon
+        // 檢查面上的所有頂點是否在投影的多邊形內
         if (point_in_polygon(pointA2D, polygon2D) && point_in_polygon(pointB2D, polygon2D) && point_in_polygon(pointC2D, polygon2D)) {
-            // Add vertices and indices to the cheek geometry
+            // 將頂點和索引添加到臉頰幾何體中
             const indexOffset = vertices.length / 3;
             vertices.push(vA.x, vA.y, vA.z);
             vertices.push(vB.x, vB.y, vB.z);
@@ -215,15 +221,15 @@ function selectCheekSurface(projectedPoints, surfaceMesh) {
         }
     }
 
-    // Set vertices and indices to the cheek geometry
+    // 設置臉頰幾何體的頂點和索引
     cheekGeometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
     cheekGeometry.setIndex(indices);
 
-    // Create a material and mesh for the cheek
+    // 為臉頰創建材質和網格
     const material = new THREE.MeshBasicMaterial({ color: 0xADD8E6, side: THREE.DoubleSide });
     const cheekMesh = new THREE.Mesh(cheekGeometry, material);
 
-    // Add the cheek mesh to the scene
+    // 將臉頰網格添加到場景中
     scene.add(cheekMesh);
 
     return cheekMesh;
