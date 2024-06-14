@@ -71,7 +71,6 @@ We welcome contributions! Please follow these steps to contribute:
 ## Roadmap
 - **Done:**
     - [x] Annotate Points on 3D Face Model
-Venus
 - **To Do:**
     - [ ] Interactive cutting of 3D surface meshes
     - [ ] Construct Surface Equation
