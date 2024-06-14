@@ -70,11 +70,12 @@ We welcome contributions! Please follow these steps to contribute:
 
 ## Roadmap
 - **Done:**
-    - [x] Annotate Points on 3D Face Model
+    - [x] Annotate points on 3D face model
+    - [x] Curve fitting to form a closed curve
 - **To Do:**
     - [ ] Interactive cutting of 3D surface meshes
-    - [ ] Construct Surface Equation
-    - [ ] Manipulate Surface Equation Parameters
+    - [ ] Construct surface equation
+    - [ ] Manipulate surface equation parameters
 
 ## License
 This project is licensed and restricted to A-TOP Health BIOTECH, Ltd. Unauthorized use, distribution, or modification of this project is prohibited.
