@@ -5,7 +5,7 @@ import { LineGeometry } from 'three/examples/jsm/lines/LineGeometry.js';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader.js';
 import { MTLLoader } from 'three/examples/jsm/loaders/MTLLoader.js';
-import { placeCutter, activateCutter, moveCutter, createVertex, sliceModel } from './cutter';
+// import { placeCutter, activateCutter, moveCutter, deactivateCutter, Mesh, createVertex, sliceModel } from './cutter';
 // 全局變數宣告
 // 宣告相機物件
 let camera;
@@ -23,7 +23,7 @@ let markedPoints = [];
 let faceMesh = null;
 // 宣告切割工具
 let cutter;
-let mesh = { faces: [], adjacencyList: new Map() }; // 初始化一個空的網格
+// let mesh: Mesh = { faces: [], adjacencyList: new Map() }; // 初始化一個空的網格
 /*
   onMouseClick() 函式介面定義
   目的：Annotation and Selection
@@ -45,13 +45,12 @@ function onMouseClick(event) {
         const marker = new THREE.Mesh(sphere, material);
         marker.position.copy(intersect.point);
         scene.add(marker);
-        if (!cutter) {
-            cutter = placeCutter(mesh, createVertex(intersect.point.x, intersect.point.y, intersect.point.z));
-            activateCutter(cutter);
-        }
-        else {
-            moveCutter(mesh, cutter, createVertex(intersect.point.x, intersect.point.y, intersect.point.z));
-        }
+        // if (!cutter) {
+        //     cutter = placeCutter(mesh, createVertex(intersect.point.x, intersect.point.y, intersect.point.z));
+        //     activateCutter(cutter);
+        // } else {
+        //     moveCutter(mesh, cutter, createVertex(intersect.point.x, intersect.point.y, intersect.point.z));
+        // }
     }
 }
 /*
@@ -94,21 +93,21 @@ function createCurve(points) {
   功能：
   - Project the curve onto the model and segment the mesh.
 */
-function sliceModelAndSeparate(curvePoints) {
-    if (!faceMesh) {
-        console.error('Face mesh not loaded');
-        return;
-    }
-    const [slicedRegion, remainingModel] = sliceModel(faceMesh, curvePoints);
-    // Move sliced region away from the original model
-    const offset = new THREE.Vector3(10, 0, 0);
-    slicedRegion.translateX(offset.x);
-    slicedRegion.translateY(offset.y);
-    slicedRegion.translateZ(offset.z);
-    // Add the separated regions to the scene
-    scene.add(slicedRegion);
-    scene.add(remainingModel);
-}
+// function sliceModelAndSeparate(curvePoints: THREE.Vector3[]) {
+//     if (!faceMesh) {
+//         console.error('Face mesh not loaded');
+//         return;
+//     }
+//     // const [slicedRegion, remainingModel] = sliceModel(faceMesh as THREE.Mesh, curvePoints);
+//     // Move sliced region away from the original model
+//     const offset = new THREE.Vector3(10, 0, 0);
+//     slicedRegion.translateX(offset.x);
+//     slicedRegion.translateY(offset.y);
+//     slicedRegion.translateZ(offset.z);
+//     // Add the separated regions to the scene
+//     scene.add(slicedRegion);
+//     scene.add(remainingModel);
+// }
 function main() {
     raycaster = new THREE.Raycaster();
     mouse = new THREE.Vector2();
@@ -199,7 +198,7 @@ function main() {
         if (markedPoints.length > 0) {
             const fittedCurvePoints = createCurve(markedPoints);
             if (faceMesh) {
-                sliceModelAndSeparate(fittedCurvePoints);
+                // sliceModelAndSeparate(fittedCurvePoints);
             }
         }
         else {
