@@ -9,6 +9,7 @@ SimFace focuses on simulating and visualizing patients' facelifts, where users w
 - [Installation](#installation)
 - [Usage](#usage)
 - [Contributing](#contributing)
+- [Roadmap](#roadmap)
 - [License](#license)
 
 ## Features
@@ -67,6 +68,14 @@ We welcome contributions! Please follow these steps to contribute:
 4. Push to the branch (`git push origin feature/your-feature`).
 5. Open a Pull Request.
 
+## Roadmap
+- **Done:**
+    - [x] Annotate Points on 3D Face Model
+Venus
+- **To Do:**
+    - [ ] Interactive cutting of 3D surface meshes
+    - [ ] Construct Surface Equation
+    - [ ] Manipulate Surface Equation Parameters
+
 ## License
 This project is licensed and restricted to A-TOP Health BIOTECH, Ltd. Unauthorized use, distribution, or modification of this project is prohibited.
-
