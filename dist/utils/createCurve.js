@@ -4,7 +4,7 @@ import { LineMaterial } from 'three/examples/jsm/lines/LineMaterial.js';
 import { LineGeometry } from 'three/examples/jsm/lines/LineGeometry.js';
 export function createCurve(points, scene) {
     const curve = new THREE.CatmullRomCurve3(points, true);
-    const pointsOnCurve = curve.getPoints(50);
+    const pointsOnCurve = curve.getPoints(10000);
     const positions = new Float32Array(pointsOnCurve.length * 3);
     for (let i = 0; i < pointsOnCurve.length; i++) {
         positions[i * 3] = pointsOnCurve[i].x;

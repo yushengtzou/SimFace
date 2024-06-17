@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 
+
 export function onMouseClick(event: MouseEvent, scene: THREE.Scene, camera: THREE.PerspectiveCamera, raycaster: THREE.Raycaster, markedPoints: THREE.Vector3[]) {
     const mouse = new THREE.Vector2();
     mouse.x = (event.clientX / window.innerWidth) * 2 - 1;

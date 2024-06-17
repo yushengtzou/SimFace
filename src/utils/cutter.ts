@@ -27,4 +27,3 @@ export function sliceModel(mesh: THREE.Mesh, curvePoints: THREE.Vector2[]): [THR
 
   return [slicedRegion, remainingModel];
 }
-

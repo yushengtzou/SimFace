@@ -3,7 +3,12 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader.js';
 import { MTLLoader } from 'three/examples/jsm/loaders/MTLLoader.js';
 
-export function constructScene(sceneParams: { canvasId: string, cameraPosition: THREE.Vector3, backgroundColor: string, modelPaths: { mtl: string, obj: string } }, sceneObjects: { camera: THREE.PerspectiveCamera, scene: THREE.Scene, renderer: THREE.WebGLRenderer, raycaster: THREE.Raycaster, faceMesh: THREE.Object3D | null }) {
+
+export function constructScene(
+    sceneParams: { canvasId: string, cameraPosition: THREE.Vector3, backgroundColor: string, modelPaths: { mtl: string, obj: string } }, 
+    sceneObjects: { camera: THREE.PerspectiveCamera, scene: THREE.Scene, renderer: THREE.WebGLRenderer, raycaster: THREE.Raycaster, faceMesh: THREE.Object3D }, 
+    onLoadCallback: () => void ) {
+
     const canvas = document.querySelector(`#${sceneParams.canvasId}`) as HTMLCanvasElement;
     sceneObjects.renderer = new THREE.WebGLRenderer({ antialias: true, canvas });
     sceneObjects.camera = new THREE.PerspectiveCamera(45, 2, 0.1, 100);
@@ -45,16 +50,34 @@ export function constructScene(sceneParams: { canvasId: string, cameraPosition: 
     const ambientLight = new THREE.AmbientLight(0xffffff, 6.0);
     sceneObjects.scene.add(ambientLight);
 
+
     const mtlLoader = new MTLLoader();
     mtlLoader.load(sceneParams.modelPaths.mtl, (mtl) => {
-        mtl.preload();
+        mtl.preload(); // Preload the materials into the MaterialCreator
         const objLoader = new OBJLoader();
-        objLoader.setMaterials(mtl);
+        objLoader.setMaterials(mtl); // Apply the materials to the OBJLoader
+        // loadedRoot: an Object3D that contains all the meshes defined in the .obj file.
+        // Each mesh within this Object3D will have the appropriate materials applied from the MaterialCreator.
         objLoader.load(sceneParams.modelPaths.obj, (loadedRoot) => {
-            sceneObjects.faceMesh = loadedRoot;
+            sceneObjects.faceMesh = loadedRoot; // loadedRoot is an Object3D containing the geometry and applied materials
             sceneObjects.faceMesh.position.set(0, 5.5, 12);
             sceneObjects.faceMesh.scale.set(6.0, 6.0, 6.0);
             sceneObjects.scene.add(sceneObjects.faceMesh);
+            onLoadCallback(); // Call the callback once the model is loaded
+
+
+            // 檢查
+            // console.log(sceneObjects.faceMesh); // Log the entire Object3D structure
+
+
+            // sceneObjects.faceMesh.traverse((child) => {
+            //     if (child instanceof THREE.Mesh) {
+            //         console.log('Mesh:', child);
+            //         console.log('Geometry:', child.geometry);
+            //         console.log('Material:', child.material);
+            //     }
+            // });
+
 
             let totalVertices = 0;
             let totalFaces = 0;
@@ -70,8 +93,8 @@ export function constructScene(sceneParams: { canvasId: string, cameraPosition: 
                 }
             });
 
-            console.log(`Total vertices: ${totalVertices}`);
-            console.log(`Total faces: ${totalFaces}`);
+            // console.log(`Total vertices: ${totalVertices}`);
+            // console.log(`Total faces: ${totalFaces}`);
         });
     });
 
@@ -96,5 +119,7 @@ export function constructScene(sceneParams: { canvasId: string, cameraPosition: 
         requestAnimationFrame(render);
     }
     requestAnimationFrame(render);
+
+
 }
 
