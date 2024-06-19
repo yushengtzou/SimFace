@@ -13,6 +13,7 @@ interface KdTree<T> {
     isValid: () => boolean;
 }
 
+
 interface Node<T> {
     obj: T;
     left: Node<T> | null;
