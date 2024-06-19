@@ -1,7 +1,7 @@
 // 引入相關套件與副程式
 import * as THREE from 'three';
 import { constructScene } from './scene';
-import { createCurve, onMouseClick, findClosestFaces } from './utils/surface';
+import { createCurve, onMouseClick } from './utils/surface';
 // 主程式
 function main() {
     let markedPoints = [];
@@ -72,7 +72,7 @@ function main() {
                     const mesh = sceneObjects.faceMesh.children[0];
                     let geometry = mesh.geometry;
                     console.log(geometry);
-                    closestFaces = findClosestFaces(fittedCurvePoints, geometry);
+                    // closestFaces = findClosestFaces(fittedCurvePoints, geometry);
                     console.log('Closest faces:', closestFaces);
                     // closestVertices = findClosestVertices(fittedCurvePoints, geometry);
                     // Do something with the closest vertices, like drawing the new curve

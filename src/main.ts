@@ -96,7 +96,7 @@ function main() {
                     console.log(geometry);
 
 
-                    closestFaces = findClosestFaces(fittedCurvePoints, geometry);
+                    // closestFaces = findClosestFaces(fittedCurvePoints, geometry);
                     console.log('Closest faces:', closestFaces);
 
                     // closestVertices = findClosestVertices(fittedCurvePoints, geometry);
