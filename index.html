@@ -1,119 +1,87 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="utf-8">
-    <title>SimFace</title>
-    <!-- Bootstrap CSS CDN -->
-    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        html, body {
-            margin: 0;
-            height: 100%;
-        }
-        #c {
-            width: 100%;
-            height: 100%;
-            display: block;
-        }
-        body {
-            padding-top: 56px; /* Adjust if needed to match navbar height */
-        }
-        #dragModeButton {
-            z-index: 1001; /* Ensure it is above the canvas */
-        }
-        .navbar-brand-center {
-            position: absolute;
-            left: 50%;
-            transform: translateX(-50%);
-        }
-        .procedure-panel {
-            position: fixed;
-            right: 50px;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 240px;
-            background-color: #f8f9fa;
-            border: 1px solid #ddd;
-            padding: 20px;
-            /* box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); */
-            z-index: 1001; /* Ensure it is above the canvas */
-        }
-        .procedure-panel h5 {
-            margin-top: 0;
-        }
-        .procedure-panel .slider {
-            width: 100%;
-        }
-    </style>
-</head>
+    <head>
+        <meta charset="utf-8">
+        <title>SimFace</title>
+        <!-- Bootstrap CSS CDN -->
+        <!-- <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet"> -->
+        <link href="src/css/output.css" rel="stylesheet">
+    </head>
 
 
-<body>
+    <body>
+        <nav class="bg-gray-50">
+            <div class="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
+                <div class="relative flex h-16 items-center justify-between">
+                    <!-- Left side items -->
+                    <div class="flex flex-1 items-center sm:items-stretch sm:justify-start">
+                        <a href="#" class="rounded-md px-3 py-2 text-base font-normal text-gray-900 hover:bg-gray-200">Setting</a>
+                    </div>
+        
+                    <!-- Center logo -->
+                    <div class="absolute left-1/2 transform -translate-x-1/2 flex flex-shrink-0 items-center">
+                        <!-- <img class="h-8 w-auto" src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=500" alt="Your Company"> -->
+                        <a href="#" class="font-sans rounded-md px-3 py-2 text-xl font-medium text-gray-900">SimFace</a>
+                    </div>
+        
+                    <!-- Right side items -->
+                    <div class="ml-auto hidden sm:flex sm:space-x-4">
+                        <a href="#" class="rounded-md px-3 py-2 text-base font-normal text-gray-900 hover:bg-gray-200">Analysis</a>
+                        <a href="#" class="rounded-md px-3 py-2 text-base font-normal text-gray-900 hover:bg-gray-200">Help</a>
+                    </div>
+        
+                    <!-- Right side button -->
+                    <div class="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
+                        <button type="button" class="relative rounded-full bg-gray-200 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
+                            <span class="absolute -inset-1.5"></span>
+                            <span class="sr-only">View notifications</span>
+                            <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true" data-slot="icon">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </nav>
+        
 
-    <!-- React Script -->
-    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
-    <!-- Babel Script -->
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+        <canvas id="c"></canvas>
 
-    <!-- Bootstrap Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
-        <div class="container">
-            <ul class="navbar-nav mr-auto">
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Settings</a>
-                </li>
-            </ul>
-            <a class="navbar-brand navbar-brand-center" href="#">SimFace</a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ml-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Analysis</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Load</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Print Out</a>
-                    </li>
-                </ul>
+
+        <div class="procedure-panel">
+            <h5>Procedure</h5>
+            <!-- <p>Select a region to modify</p> -->
+            <p></p>
+            <p>Annotate points on face</p>
+            <input type="button" value="Fit Curve" id="fit-curve">
+            <p></p>
+            <input type="button" value="Cut Surface" id="cut-surface">
+            <p></p>
+            <p>Drag the slide bar to change the shape</p>
+            <input type="range" class="slider" min="0" max="100" value="50">
+            <p>Step</p>
+            <input type="number" class="form-control" value="0.0" step="0.1">
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="" id="volumeAreas">
+                <label class="form-check-label" for="volumeAreas">
+                    Volume areas
+                </label>
             </div>
         </div>
-    </nav>
 
-    <canvas id="c"></canvas>
 
-    <div class="procedure-panel">
-        <h5>Procedure</h5>
-        <!-- <p>Select a region to modify</p> -->
-        <p></p>
-        <p>Annotate points on face</p>
-        <input type="button" value="Fit Curve" id="fit-curve">
-        <p></p>
-        <input type="button" value="Cut Surface" id="cut-surface">
-        <p></p>
-        <p>Drag the slide bar to change the shape</p>
-        <input type="range" class="slider" min="0" max="100" value="50">
-        <p>Step</p>
-        <input type="number" class="form-control" value="0.0" step="0.1">
-        <div class="form-check">
-            <input class="form-check-input" type="checkbox" value="" id="volumeAreas">
-            <label class="form-check-label" for="volumeAreas">
-                Volume areas
-            </label>
+        <div class="vertical-toolbar">
+            <button>️F</button>
+            <button>C</button>
         </div>
-    </div>
 
 
-    <!-- Bootstrap JS and dependencies -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <script type="module" src="./dist/main.js"></script>
-</body>
+        <!-- Bootstrap JS and dependencies -->
+        <!-- <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script> -->
+        <script type="module" src="./dist/main.js"></script>
+    </body>
 </html>
 
 

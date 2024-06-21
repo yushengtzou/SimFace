@@ -41,42 +41,6 @@ export function createCurve(points, scene, colors) {
     scene.add(line);
     return pointsOnCurve;
 }
-// Extract Vertices: The getVerticesFromGeometry function extracts vertices from BufferGeometry
-function getVerticesFromGeometry(geometry) {
-    const vertices = [];
-    const positionAttribute = geometry.getAttribute('position');
-    for (let i = 0; i < positionAttribute.count; i++) {
-        const vertex = new THREE.Vector3();
-        vertex.fromBufferAttribute(positionAttribute, i);
-        vertices.push(vertex);
-    }
-    return vertices;
-}
-// Find Closest Vertex: The findClosestVertex function finds the closest vertex to a given point.
-// function findClosestVertex(point: THREE.Vector3, vertices: THREE.Vector3[]): THREE.Vector3 {
-//     let closestVertex = vertices[0];
-//     let minDistance = point.distanceTo(vertices[0]);
-//     for (const vertex of vertices) {
-//         const distance = point.distanceTo(vertex);
-//         if (distance < minDistance) {
-//             minDistance = distance;
-//             closestVertex = vertex;
-//         }
-//     }
-//     return closestVertex;
-// }
-// Find Closest Vertices for Curve: The findClosestVerticesOnMesh function iterates over each point on the drawn curve and finds the closest vertex on the mesh.
-// export function findClosestVerticesOnMesh(curvePoints: THREE.Vector3[], meshGeometry: THREE.BufferGeometry): THREE.Vector3[] {
-//     console.log("findClosestVerticesOnMesh() being called");
-//     const meshVertices = getVerticesFromGeometry(meshGeometry);
-//     console.log('Mesh vertices:', meshVertices);
-//     const closestVertices: THREE.Vector3[] = [];
-// for (const point of curvePoints) {
-//     const closestVertex = findClosestVertex(point, meshVertices);
-//     closestVertices.push(closestVertex);
-// }
-//     return closestVertices;
-// }
 const clickMouse = new THREE.Vector2(); // create once
 const vector3 = new THREE.Vector3(); // create once
 const MAX_CLICK_DISTANCE = 0.1; // 最大點擊距離
@@ -113,6 +77,42 @@ export function elevate(raycaster, scene, camera) {
         }
     };
 }
+// Extract Vertices: The getVerticesFromGeometry function extracts vertices from BufferGeometry
+function getVerticesFromGeometry(geometry) {
+    const vertices = [];
+    const positionAttribute = geometry.getAttribute('position');
+    for (let i = 0; i < positionAttribute.count; i++) {
+        const vertex = new THREE.Vector3();
+        vertex.fromBufferAttribute(positionAttribute, i);
+        vertices.push(vertex);
+    }
+    return vertices;
+}
+// Find Closest Vertex: The findClosestVertex function finds the closest vertex to a given point.
+// function findClosestVertex(point: THREE.Vector3, vertices: THREE.Vector3[]): THREE.Vector3 {
+//     let closestVertex = vertices[0];
+//     let minDistance = point.distanceTo(vertices[0]);
+//     for (const vertex of vertices) {
+//         const distance = point.distanceTo(vertex);
+//         if (distance < minDistance) {
+//             minDistance = distance;
+//             closestVertex = vertex;
+//         }
+//     }
+//     return closestVertex;
+// }
+// Find Closest Vertices for Curve: The findClosestVerticesOnMesh function iterates over each point on the drawn curve and finds the closest vertex on the mesh.
+// export function findClosestVerticesOnMesh(curvePoints: THREE.Vector3[], meshGeometry: THREE.BufferGeometry): THREE.Vector3[] {
+//     console.log("findClosestVerticesOnMesh() being called");
+//     const meshVertices = getVerticesFromGeometry(meshGeometry);
+//     console.log('Mesh vertices:', meshVertices);
+//     const closestVertices: THREE.Vector3[] = [];
+// for (const point of curvePoints) {
+//     const closestVertex = findClosestVertex(point, meshVertices);
+//     closestVertices.push(closestVertex);
+// }
+//     return closestVertices;
+// }
 // Helper function to compare points with a tolerance
 function arePointsEqual(p1, p2, tolerance = 1e-6) {
     return Math.abs(p1.x - p2.x) < tolerance &&

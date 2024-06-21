@@ -1,0 +1,70 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+html, body {
+    margin: 0;
+    height: 100%;
+}
+#c {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+body {
+    padding-top: 0px; /* Adjust if needed to match navbar height */
+}
+#dragModeButton {
+    z-index: 1001; /* Ensure it is above the canvas */
+}
+.navbar-brand-center {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+}
+.procedure-panel {
+    position: fixed;
+    right: 9%;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 240px;
+    background-color: #f8f9fa;
+    border: 1px solid #ddd;
+    padding: 20px;
+    /* box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); */
+    z-index: 1001; /* Ensure it is above the canvas */
+}
+.procedure-panel h5 {
+    margin-top: 0;
+}
+.procedure-panel.slider {
+    width: 100%;
+}
+
+.vertical-toolbar {
+    position: fixed;
+    left: 27%;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: rgb(150, 150, 150);
+    border-radius: 3%;
+    width: 12px;
+    height: 15%; /* Adjust height as needed */
+    padding: 10px;
+    z-index: 1001;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+
+.vertical-toolbar button {
+    display: block;
+    width: 45px;
+    height: 45px;
+    margin: 10px auto;
+    border-radius: 50%;
+    background-color: white;
+    border: 1px solid #ddd;
+}

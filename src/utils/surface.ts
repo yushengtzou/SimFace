@@ -8,7 +8,7 @@ import { kdTree } from 'kd-tree-javascript';
 interface KdTree<T> {
     root: Node<T> | null;
     countNodes: () => number;
-    inorderTraversal: () => T[];
+    unorderedTraversal: () => T[];
     isBalanced: () => boolean;
     isValid: () => boolean;
 }
