@@ -22,7 +22,7 @@
             top: 0;
             width: 100%;
             z-index: 1001;
-            background-color: rgba(255, 255, 255, 0.9); /* Slightly transparent background */
+            background-color: rgba(255, 255, 255, 1.0); /* Slightly transparent background */
         }
         canvas {
             position: absolute;
@@ -30,17 +30,6 @@
             left: 0;
             width: 100%;
             height: 100%;
-        }
-        .procedure-panel {
-            position: fixed;
-            right: 9%;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 240px;
-            background-color: #f8f9fa;
-            border: 1px solid #ddd;
-            padding: 20px;
-            z-index: 1001; /* Ensure it is above the canvas */
         }
     </style>
 </head>
@@ -73,8 +62,8 @@
     <canvas id="c"></canvas>
 
 
-    <div class="bg-white h-screen flex items-center justify-end pr-10">
-        <div class="procedure-panel fixed right-10 top-1/2 transform -translate-y-1/2 w-64 bg-white border border-gray-300 p-5 shadow-lg rounded-md">
+    <div class="h-screen flex items-center justify-end pr-10">
+        <div class="fixed right-10 top-1/2 transform -translate-y-1/2 w-64 bg-white p-5 shadow-md rounded-md">
             <div class="text-center">
                 <p class="text-xl leading-7">Curves Tool</p>
                 <hr class="border-t border-gray-300 w-full mx-0 my-4"> <!-- Ensure the divider touches the vertical borders -->
