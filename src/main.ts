@@ -23,7 +23,8 @@ function main() {
     const sceneParams = {
         canvasId: 'c',
         cameraPosition: new THREE.Vector3(0, 8, 10),
-        backgroundColor: 'white',
+        backgroundColor: '#f3f4f6',
+        // backgroundColor: '#f9fafb',
         modelPaths: {
             mtl: '.././model/lulu/texturedMesh.mtl',
             obj: '.././model/lulu/texturedMesh.obj'

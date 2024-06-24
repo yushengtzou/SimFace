@@ -4,7 +4,8 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SimFace</title>
-    <link href="src/css/output.css" rel="stylesheet">
+    <link href="dist/output.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <style>
         html, body {
             margin: 0;
@@ -44,7 +45,7 @@
     </style>
 </head>
 <body>
-    <nav class="bg-gray-50 border-b-10 border-b-indigo-500">
+    <nav class="bg-white shadow-md">
         <div class="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
             <div class="relative flex h-16 items-center justify-between">
                 <!-- Left side items -->
@@ -68,13 +69,21 @@
         </div>
     </nav>
 
+
     <canvas id="c"></canvas>
 
-    <div class="procedure-panel">
-        <p class="text-xl text-right">Curves Tool</p>
-        <p>Range</p>
-        <input type="range" class="slider" min="0" max="100" value="50">
+
+    <div class="bg-white h-screen flex items-center justify-end pr-10">
+        <div class="procedure-panel fixed right-10 top-1/2 transform -translate-y-1/2 w-64 bg-white border border-gray-300 p-5 shadow-lg rounded-md">
+            <div class="text-center">
+                <p class="text-xl leading-7">Curves Tool</p>
+                <hr class="border-t border-gray-300 w-full mx-0 my-4"> <!-- Ensure the divider touches the vertical borders -->
+            </div>
+            <p>Range</p>
+            <input type="range" class="slider w-full" min="0" max="100" value="50">
+        </div>
     </div>
+
 
     <!-- <div class="procedure-panel">
         <h5>Procedure</h5> -->
