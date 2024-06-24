@@ -58,21 +58,21 @@ function main() {
         });
 
         // 視窗事件監聽，鼠標點擊，標記點於模型上
-        window.addEventListener('click', (event) => onMouseClick(event, sceneObjects.scene, sceneObjects.camera, sceneObjects.raycaster, markedPoints));
+        // window.addEventListener('click', (event) => onMouseClick(event, sceneObjects.scene, sceneObjects.camera, sceneObjects.raycaster, markedPoints));
 
         // 視窗事件監聽，鼠標點擊於模型上，頂點Z座標位置改變
-        // window.addEventListener('click', elevate(sceneObjects.raycaster, sceneObjects.scene, sceneObjects.camera));
+        window.addEventListener('click', elevate(sceneObjects.raycaster, sceneObjects.scene, sceneObjects.camera));
 
 
         // 視窗事件監聽，曲線擬合按鈕點擊
-        fit_curve.addEventListener('click', () => {
-            console.log("視窗事件監聽，曲線擬合按鈕點擊");
-            if (markedPoints.length > 5) {
-                fittedCurvePoints = createCurve(markedPoints, sceneObjects.scene, new THREE.Color(0xFF0000) );
-                //0x3399FF 0xFF0000
-                console.log(fittedCurvePoints.length);
-                console.log(sceneObjects.faceMesh.children.length);
-                console.log(sceneObjects.faceMesh.children);
+        // fit_curve.addEventListener('click', () => {
+        //     console.log("視窗事件監聽，曲線擬合按鈕點擊");
+        //     if (markedPoints.length > 5) {
+        //         fittedCurvePoints = createCurve(markedPoints, sceneObjects.scene, new THREE.Color(0xFF0000) );
+        //         //0x3399FF 0xFF0000
+        //         console.log(fittedCurvePoints.length);
+        //         console.log(sceneObjects.faceMesh.children.length);
+        //         console.log(sceneObjects.faceMesh.children);
 
 
                 // 檢查點
@@ -89,15 +89,15 @@ function main() {
 
 
                 // 找出曲線每個點最靠近的模型 face 
-                if (sceneObjects.faceMesh && sceneObjects.faceMesh.children.length > 0) {
-                    console.log("找出曲線每個點最靠近的模型 face");
-                    const mesh = sceneObjects.faceMesh.children[0] as THREE.Mesh;
-                    let geometry = mesh.geometry as THREE.BufferGeometry;
-                    console.log(geometry);
+                // if (sceneObjects.faceMesh && sceneObjects.faceMesh.children.length > 0) {
+                //     console.log("找出曲線每個點最靠近的模型 face");
+                //     const mesh = sceneObjects.faceMesh.children[0] as THREE.Mesh;
+                //     let geometry = mesh.geometry as THREE.BufferGeometry;
+                //     console.log(geometry);
 
 
                     // closestFaces = findClosestFaces(fittedCurvePoints, geometry);
-                    console.log('Closest faces:', closestFaces);
+                    // console.log('Closest faces:', closestFaces);
 
                     // closestVertices = findClosestVertices(fittedCurvePoints, geometry);
 
@@ -106,10 +106,10 @@ function main() {
                     // createCurve(closestVertices, sceneObjects.scene, new THREE.Color(0xFF0000));
 
                 }
-            } else {
-                alert('Please mark some points first!');
-            }
-        });
+        //     } else {
+        //         alert('Please mark some points first!');
+        //     }
+        // });
 
 
 
@@ -125,16 +125,15 @@ function main() {
         // 可以用鼠標移動截取出的曲面模型
 
 
-    }
 
 
     // 呼叫建立場景的副程式
     constructScene(sceneParams, sceneObjects, onModelLoaded);
 
 
-
-
 }
+
+
 
 
 main();

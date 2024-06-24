@@ -6,6 +6,7 @@
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
+    "@vitejs/plugin-react": "^4.3.1",
     "kd-tree-javascript": "^1.0.3",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
@@ -26,6 +27,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build"
+    "build": "vite build",
+    "build:css": "tailwindcss -i ./src/css/input.css -o ./dist/output.css --watch"
   }
 }

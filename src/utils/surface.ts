@@ -5,6 +5,8 @@ import { LineGeometry } from 'three/examples/jsm/lines/LineGeometry.js';
 import { kdTree } from 'kd-tree-javascript';
 
 
+let navbarHeight: number = 0;
+
 interface KdTree<T> {
     root: Node<T> | null;
     countNodes: () => number;
@@ -26,8 +28,27 @@ interface Node<T> {
 // 鼠標點擊，標記點於模型上
 export function onMouseClick(event: MouseEvent, scene: THREE.Scene, camera: THREE.PerspectiveCamera, raycaster: THREE.Raycaster, markedPoints: THREE.Vector3[]) {
     const mouse = new THREE.Vector2();
+    const navbar = document.querySelector('nav');
+    // let navbarHeight = 44;
+    
+    console.log("onMouseClick() being called");
+
+    // if (navbar) {
+    //     navbarHeight = navbar.offsetHeight;
+    //     console.log("Navbar height:", navbarHeight);
+    // } else {
+    //     console.error('Navbar element not found');
+    // }
+
+    // Subtract navbarHeight from clientY to get correct position relative to the canvas
+    console.log("event.clientY: ", event.clientY);
+    // const adjustedClientY = event.clientY - navbarHeight;
+    // console.log("adjustedClientY: ", adjustedClientY);
+
     mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-    mouse.y = - (event.clientY / window.innerHeight) * 2 + 1;
+    mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+    console.log("Mouse coordinates:", mouse.x, mouse.y);
 
     raycaster.setFromCamera(mouse, camera);
     const intersects = raycaster.intersectObjects(scene.children, true);
@@ -36,11 +57,15 @@ export function onMouseClick(event: MouseEvent, scene: THREE.Scene, camera: THRE
         const intersect = intersects[0];
         markedPoints.push(intersect.point);
 
+        console.log("Intersection point:", intersect.point);
+
         const sphere = new THREE.SphereGeometry(0.02, 32, 32);
         const material = new THREE.MeshBasicMaterial({ color: 0x3399FF });
         const marker = new THREE.Mesh(sphere, material);
         marker.position.copy(intersect.point);
         scene.add(marker);
+    } else {
+        console.log("No intersections found.");
     }
 }
 
