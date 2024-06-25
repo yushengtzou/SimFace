@@ -1,28 +1,13 @@
 import * as THREE from 'three';
-
-
 // Overview sculpt :
 // start (check if we hit the mesh, start state stack) -> startSculpt
 // startSculpt (init stuffs specific to the tool) -> sculptStroke
-
 // sculptStroke (handle sculpt stroke by throttling/smoothing stroke) -> makeStroke
 // makeStroke (handle symmetry and picking before sculping) -> stroke
 // stroke (tool specific, move vertices, etc)
-
 // update -> sculptStroke
-
-
 class Drag {
-    private _radius: number;
-    private _dragDir: THREE.Vector3;
-    private _dragDirSym: THREE.Vector3;
-    private _idAlpha: number;
-    private _lastMouseX: number;
-    private _lastMouseY: number;
-    private _lockPosition: boolean;
-    public _main: any;
-
-    constructor(main: any) {
+    constructor(main) {
         this._main = main;
         this._radius = 150;
         this._dragDir = new THREE.Vector3();
@@ -32,109 +17,92 @@ class Drag {
         this._lastMouseY = 0;
         this._lockPosition = false; // 假設 _lockPosition 需要被定義
     }
-
     /**
      * 進行雕刻筆劃操作
      * 根據滑鼠的移動進行雕刻的筆劃操作，並更新模型
      */
-    sculptStroke(): void {
+    sculptStroke() {
         const main = this._main;
         const mesh = this.getMesh();
         const picking = main.getPicking();
         // const pickingSym = main.getSculptManager().getSymmetry() ? main.getPickingSymmetry() : null;
-
         const dx = main._mouseX - this._lastMouseX;
         const dy = main._mouseY - this._lastMouseY;
         const dist = Math.sqrt(dx * dx + dy * dy);
         const minSpacing = 0.15 * this._radius;
-
         const step = 1.0 / Math.floor(dist / minSpacing);
         let mouseX = this._lastMouseX;
         let mouseY = this._lastMouseY;
-
-        if (!picking.getMesh()) return;
+        if (!picking.getMesh())
+            return;
         picking._mesh = mesh;
         // if (pickingSym) {
         //     pickingSym._mesh = mesh;
         //     pickingSym.getIntersectionPoint().copy(picking.getIntersectionPoint());
         //     this.mirrorPoint(pickingSym.getIntersectionPoint(), mesh.getSymmetryOrigin(), mesh.getSymmetryNormal());
         // }
-
         for (let i = 0.0; i < 1.0; i += step) {
             // if (!this.makeStroke(mouseX, mouseY, picking, pickingSym)) break;
             mouseX += dx;
             mouseY += dy;
         }
-
         this.updateRender();
-
         this._lastMouseX = main._mouseX;
         this._lastMouseY = main._mouseY;
     }
-
     /**
      * 進行筆劃操作
-     * 
+     *
      * @param mouseX - 滑鼠 X 坐標
      * @param mouseY - 滑鼠 Y 坐標
      * @param picking - 採樣物件
      * @param pickingSym - 對稱採樣物件
      * @returns 是否成功進行筆劃
      */
-    makeStroke(mouseX: number, mouseY: number, picking: any, pickingSym: any): boolean {
+    makeStroke(mouseX, mouseY, picking, pickingSym) {
         const mesh = this.getMesh();
         this.updateDragDir(picking, mouseX, mouseY);
         picking.pickVerticesInSphere(picking.getLocalRadius2());
         picking.computePickedNormal();
-
-        if (mesh.isDynamic) this.stroke(picking, false);
-
+        if (mesh.isDynamic)
+            this.stroke(picking, false);
         if (pickingSym) {
             this.updateDragDir(pickingSym, mouseX, mouseY, true);
             pickingSym.setLocalRadius2(picking.getLocalRadius2());
             pickingSym.pickVerticesInSphere(pickingSym.getLocalRadius2());
         }
-
-        if (!mesh.isDynamic) this.stroke(picking, false);
-        if (pickingSym) this.stroke(pickingSym, true);
+        if (!mesh.isDynamic)
+            this.stroke(picking, false);
+        if (pickingSym)
+            this.stroke(pickingSym, true);
         return true;
     }
-
     /**
      * 進行雕刻筆劃操作
-     * 
+     *
      * @param picking - 採樣物件
      * @param sym - 是否對稱
      */
-    stroke(picking: any, sym: boolean): void {
+    stroke(picking, sym) {
         let iVertsInRadius = picking.getPickedVertices();
         this._main.getStateManager().pushVertices(iVertsInRadius);
         iVertsInRadius = this.dynamicTopology(picking);
-
         picking.updateAlpha(this._lockPosition);
         picking.setIdAlpha(this._idAlpha);
         this.drag(iVertsInRadius, picking.getIntersectionPoint(), picking.getLocalRadius2(), sym, picking);
-
         const mesh = this.getMesh();
         mesh.updateGeometry(mesh.getFacesFromVertices(iVertsInRadius), iVertsInRadius);
     }
-
     /**
      * 拖動變形
-     * 
+     *
      * @param iVerts - 頂點索引數組
      * @param center - 中心點 [x, y, z]
      * @param radiusSquared - 半徑平方
      * @param sym - 是否對稱
      * @param picking - 採樣物件
      */
-    drag(
-        iVerts: number[],
-        center: THREE.Vector3,
-        radiusSquared: number,
-        sym: boolean,
-        picking: any
-    ): void {
+    drag(iVerts, center, radiusSquared, sym, picking) {
         const mesh = this.getMesh();
         const vAr = mesh.getVertices();
         const mAr = mesh.getMaterials();
@@ -142,7 +110,6 @@ class Drag {
         const [cx, cy, cz] = [center.x, center.y, center.z];
         const dir = sym ? this._dragDirSym : this._dragDir;
         const [dirx, diry, dirz] = [dir.x, dir.y, dir.z];
-
         for (let i = 0, l = iVerts.length; i < l; ++i) {
             const ind = iVerts[i] * 3;
             const vx = vAr[ind];
@@ -160,16 +127,15 @@ class Drag {
             vAr[ind + 2] = vz + dirz * fallOff;
         }
     }
-
     /**
      * 設定拖動方向資訊
-     * 
+     *
      * @param picking - 採樣物件
      * @param mouseX - 滑鼠 X 坐標
      * @param mouseY - 滑鼠 Y 坐標
      * @param useSymmetry - 是否使用對稱
      */
-    updateDragDir(picking: any, mouseX: number, mouseY: number, useSymmetry?: boolean): void {
+    updateDragDir(picking, mouseX, mouseY, useSymmetry) {
         const mesh = this.getMesh();
         const vNear = picking.unproject(mouseX, mouseY, 0.0);
         const vFar = picking.unproject(mouseX, mouseY, 0.1);
@@ -192,64 +158,57 @@ class Drag {
         const eyeDir = picking.getEyeDirection();
         eyeDir.copy(vFar).sub(vNear).normalize();
     }
-
     /**
      * 鏡像點
-     * 
+     *
      * @param point - 被鏡像的點
      * @param origin - 對稱原點
      * @param normal - 對稱法線
      */
-    mirrorPoint(point: THREE.Vector3, origin: THREE.Vector3, normal: THREE.Vector3): void {
+    mirrorPoint(point, origin, normal) {
         const toPoint = new THREE.Vector3().subVectors(point, origin);
         const distance = toPoint.dot(normal);
         point.sub(normal.clone().multiplyScalar(2 * distance));
     }
-
     /**
      * 計算點在線上的位置
-     * 
+     *
      * @param start - 線段起點
      * @param end - 線段終點
      * @param point - 欲投影的點
      * @returns 投影點
      */
-    vertexOnLine(start: THREE.Vector3, end: THREE.Vector3, point: THREE.Vector3): THREE.Vector3 {
+    vertexOnLine(start, end, point) {
         const line = new THREE.Vector3().subVectors(end, start);
         const projected = new THREE.Vector3().subVectors(point, start).projectOnVector(line);
         return projected.add(start);
     }
-
     /**
      * 獲取當前使用的網格
      * @returns 網格物件
      */
-    getMesh(): any {
+    getMesh() {
         // 取得網格的佔位方法
         // 需要替換為實際實現
         return this._main.getMesh();
     }
-
     /**
      * 更新渲染
      */
-    updateRender(): void {
+    updateRender() {
         // 更新渲染的佔位方法
         // 需要替換為實際實現
         this._main.updateRender();
     }
-
     /**
      * 動態拓樸操作
      * @param picking - 採樣物件
      * @returns 更新後的頂點索引數組
      */
-    dynamicTopology(picking: any): any {
+    dynamicTopology(picking) {
         // 動態拓樸的佔位方法
         // 需要替換為實際實現
         return picking.dynamicTopology();
     }
 }
-
 export default Drag;
-

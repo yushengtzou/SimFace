@@ -16,7 +16,8 @@ function main() {
         scene: null as unknown as THREE.Scene,
         renderer: null as unknown as THREE.WebGLRenderer,
         raycaster: new THREE.Raycaster(),
-        faceMesh: new THREE.Object3D
+        faceMesh: new THREE.Object3D,
+        getMesh: () => sceneObjects.faceMesh
     };
 
     // 宣告場景變數
