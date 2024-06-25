@@ -62,14 +62,16 @@
     <canvas id="c"></canvas>
 
 
-    <div class="h-screen flex items-center justify-end pr-10">
-        <div class="fixed right-10 top-1/2 transform -translate-y-1/2 w-64 bg-white p-5 shadow-md rounded-md">
+    <div class="bg-gray-100 h-screen flex items-center justify-end pr-10">
+        <div class="fixed right-10 top-1/2 transform -translate-y-1/2 w-64 bg-white p-5 shadow-md rounded-md border border-gray-300">
             <div class="text-center">
                 <p class="text-xl leading-7">Curves Tool</p>
-                <hr class="border-t border-gray-300 w-full mx-0 my-4"> <!-- Ensure the divider touches the vertical borders -->
             </div>
-            <p>Range</p>
-            <input type="range" class="slider w-full" min="0" max="100" value="50">
+            <hr class="border-t border-gray-300 w-full my-4"> <!-- Full-width divider -->
+            <div class="py-2">
+                <p class="font-medium">Range</p>
+                <input type="range" class="slider w-full mt-2" min="0" max="100" value="50">
+            </div>
         </div>
     </div>
 

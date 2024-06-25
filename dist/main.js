@@ -1,7 +1,7 @@
 // 引入相關套件與副程式
 import * as THREE from 'three';
 import { constructScene } from './scene';
-import { elevate } from './utils/surface';
+import { elevate } from './utils/deform';
 // 主程式
 function main() {
     let markedPoints = [];
