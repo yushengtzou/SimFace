@@ -12,10 +12,12 @@ class Drag extends SculptBase {
      * 根據滑鼠的移動進行雕刻的筆劃操作，並更新模型
      */
     sculptStroke() {
+        console.log("sculptStroke called");
         const main = this._main;
         const mesh = this.getMesh();
         const picking = main.getPicking();
-        const pickingSym = main.getSculptManager().getSymmetry() ? main.getPickingSymmetry() : null;
+        const pickingSym = false;
+        // const pickingSym = main.getSculptManager().getSymmetry() ? main.getPickingSymmetry() : null;
         const dx = main._mouseX - this._lastMouseX;
         const dy = main._mouseY - this._lastMouseY;
         const dist = Math.sqrt(dx * dx + dy * dy);
@@ -23,13 +25,15 @@ class Drag extends SculptBase {
         const step = 1.0 / Math.floor(dist / minSpacing);
         let mouseX = this._lastMouseX;
         let mouseY = this._lastMouseY;
-        if (!picking.getMesh())
+        // if (!picking.getMesh()) return;
+        if (!picking || typeof picking.getMesh !== 'function' || !picking.getMesh()) {
             return;
+        }
         picking._mesh = mesh;
         if (pickingSym) {
-            pickingSym._mesh = mesh;
-            pickingSym.getIntersectionPoint().copy(picking.getIntersectionPoint());
-            this.mirrorPoint(pickingSym.getIntersectionPoint(), mesh.getSymmetryOrigin(), mesh.getSymmetryNormal());
+            // pickingSym._mesh = mesh;
+            // pickingSym.getIntersectionPoint().copy(picking.getIntersectionPoint());
+            // this.mirrorPoint(pickingSym.getIntersectionPoint(), mesh.getSymmetryOrigin(), mesh.getSymmetryNormal());
         }
         for (let i = 0.0; i < 1.0; i += step) {
             if (!this.makeStroke(mouseX, mouseY, picking, pickingSym))

@@ -14,7 +14,7 @@ export function constructScene(sceneParams, sceneObjects, onLoadCallback) {
     // 初始化 WebGL 渲染器
     sceneObjects.renderer = new THREE.WebGLRenderer({ antialias: true, canvas });
     // 初始化透視相機
-    sceneObjects.camera = new THREE.PerspectiveCamera(45, 2, 0.1, 100);
+    sceneObjects.camera = new THREE.PerspectiveCamera(45, canvas.clientWidth / canvas.clientHeight, 0.1, 100);
     sceneObjects.camera.position.copy(sceneParams.cameraPosition);
     // 初始化軌道控制器
     const controls = new OrbitControls(sceneObjects.camera, canvas);
@@ -23,67 +23,26 @@ export function constructScene(sceneParams, sceneObjects, onLoadCallback) {
     // 建立場景並設置背景顏色
     sceneObjects.scene = new THREE.Scene();
     sceneObjects.scene.background = new THREE.Color(sceneParams.backgroundColor);
-    // 設置地面
-    // const planeSize = 40;
-    // const loader = new THREE.TextureLoader();
-    // const texture = loader.load('https://threejs.org/manual/examples/resources/images/checker.png');
-    // texture.colorSpace = THREE.SRGBColorSpace;
-    // texture.wrapS = THREE.RepeatWrapping;
-    // texture.wrapT = THREE.RepeatWrapping;
-    // texture.magFilter = THREE.NearestFilter;
-    // texture.repeat.set(planeSize / 2, planeSize / 2);
-    // const planeGeo = new THREE.PlaneGeometry(planeSize, planeSize);
-    // const planeMat = new THREE.MeshPhongMaterial({ map: texture, side: THREE.DoubleSide });
-    // const planeMesh = new THREE.Mesh(planeGeo, planeMat);
-    // planeMesh.rotation.x = Math.PI * -0.5;
-    // sceneObjects.scene.add(planeMesh); // 如有需要可添加地面
     // 設置半球光源
-    const skyColor = 0xB1E1FF;
-    const groundColor = 0xB97A20;
-    const intensity = 15;
-    const hemiLight = new THREE.HemisphereLight(skyColor, groundColor, intensity);
-    sceneObjects.scene.add(hemiLight);
+    const hemiLight = new THREE.HemisphereLight(0xB1E1FF, 0xB97A20, 15);
     // 設置方向光源
-    const dirLight = new THREE.DirectionalLight(0xFFFFFF, intensity);
+    const dirLight = new THREE.DirectionalLight(0xFFFFFF, 15);
     dirLight.position.set(5, 10, 2);
-    sceneObjects.scene.add(dirLight);
-    sceneObjects.scene.add(dirLight.target);
     // 設置環境光源
     const ambientLight = new THREE.AmbientLight(0xffffff, 6.0);
-    sceneObjects.scene.add(ambientLight);
+    sceneObjects.scene.add(hemiLight, dirLight, dirLight.target, ambientLight);
     // 載入材質並應用到模型
     const mtlLoader = new MTLLoader();
     mtlLoader.load(sceneParams.modelPaths.mtl, (mtl) => {
         mtl.preload(); // 預載材質
         const objLoader = new OBJLoader();
         objLoader.setMaterials(mtl); // 將材質應用到 OBJLoader
-        // 載入 OBJ 模型
         objLoader.load(sceneParams.modelPaths.obj, (loadedRoot) => {
             sceneObjects.faceMesh = loadedRoot; // 將載入的模型賦值給 faceMesh
             sceneObjects.faceMesh.position.set(0, 5.0, 12);
             sceneObjects.faceMesh.scale.set(6.0, 6.0, 6.0);
-            // 旋轉模型 10 度（順時針方向，沿 Y 軸）
-            // sceneObjects.faceMesh.rotation.y = THREE.MathUtils.degToRad(10);
             sceneObjects.scene.add(sceneObjects.faceMesh);
-            onLoadCallback(); // 模型載入完成後呼叫回調函數
-            // 遍歷模型以計算頂點和面的總數
-            let totalVertices = 0;
-            let totalFaces = 0;
-            sceneObjects.faceMesh.traverse((child) => {
-                if (child.isMesh && child.geometry) {
-                    const geometry = child.geometry;
-                    totalVertices += geometry.attributes.position ? geometry.attributes.position.count : 0;
-                    if (geometry.index) {
-                        totalFaces += geometry.index.count / 3;
-                    }
-                    else {
-                        totalFaces += geometry.attributes.position.count / 3;
-                    }
-                }
-            });
-            // 如有需要可打印總頂點數和總面數
-            // console.log(`Total vertices: ${totalVertices}`);
-            // console.log(`Total faces: ${totalFaces}`);
+            onLoadCallback(); // 模型載入完成後呼叫回調函數       
         });
     });
     // 調整渲染器大小
@@ -97,12 +56,61 @@ export function constructScene(sceneParams, sceneObjects, onLoadCallback) {
         }
         return needResize;
     }
+    let needsCheck = false;
+    let lastMouseEvent = null;
+    // 節流函數，避免高頻率事件觸發
+    function throttle(fn, limit) {
+        let lastFunc;
+        let lastRan;
+        return function (...args) {
+            if (!lastRan) {
+                fn(...args);
+                lastRan = Date.now();
+            }
+            else {
+                clearTimeout(lastFunc);
+                lastFunc = window.setTimeout(function () {
+                    if ((Date.now() - lastRan) >= limit) {
+                        fn(...args);
+                        lastRan = Date.now();
+                    }
+                }, limit - (Date.now() - lastRan));
+            }
+        };
+    }
+    // 添加事件監聽器以根據鼠標位置禁用或啟用控制器
+    const checkMouseOverModel = throttle((event) => {
+        const mouse = new THREE.Vector2();
+        mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+        mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+        sceneObjects.raycaster.setFromCamera(mouse, sceneObjects.camera);
+        const intersects = sceneObjects.raycaster.intersectObjects([sceneObjects.faceMesh]);
+        controls.enabled = intersects.length === 0;
+    }, 200); // 每200毫秒檢查一次
+    function onMouseMove(event) {
+        lastMouseEvent = event;
+        needsCheck = true;
+    }
+    window.addEventListener('mousemove', onMouseMove);
     // 渲染函數
+    // function render() {
+    //     if (resizeRendererToDisplaySize(sceneObjects.renderer)) {
+    //         const canvas = sceneObjects.renderer.domElement;
+    //         sceneObjects.camera.aspect = canvas.clientWidth / canvas.clientHeight;
+    //         sceneObjects.camera.updateProjectionMatrix();
+    //     }
+    //     sceneObjects.renderer.render(sceneObjects.scene, sceneObjects.camera);
+    //     requestAnimationFrame(render);
+    // }
     function render() {
         if (resizeRendererToDisplaySize(sceneObjects.renderer)) {
             const canvas = sceneObjects.renderer.domElement;
             sceneObjects.camera.aspect = canvas.clientWidth / canvas.clientHeight;
             sceneObjects.camera.updateProjectionMatrix();
+        }
+        if (needsCheck && lastMouseEvent) {
+            checkMouseOverModel(lastMouseEvent);
+            needsCheck = false;
         }
         sceneObjects.renderer.render(sceneObjects.scene, sceneObjects.camera);
         requestAnimationFrame(render);

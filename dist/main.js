@@ -64,7 +64,8 @@ function main() {
             sceneObjects.raycaster.setFromCamera(clickMouse, sceneObjects.camera);
             const found = sceneObjects.raycaster.intersectObjects(sceneObjects.scene.children);
             if (found.length > 0) {
-                // 如果射線檢測到 3D 模型，則添加 mousemove 事件監聽器
+                // 如果射線檢測到 3D 模型，則開始拖曳
+                isDragging = true;
                 window.addEventListener('mousemove', onMouseMove);
             }
         }

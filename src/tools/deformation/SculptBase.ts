@@ -10,6 +10,7 @@ import Utils from './misc/Utils';
 // update -> sculptStroke
 
 abstract class SculptBase {
+    // SculptBase 類別的屬性型別定義
     public _main: any; 
     public _lastMouseX: number;
     public _lastMouseY: number;

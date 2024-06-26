@@ -2,27 +2,35 @@ import * as THREE from 'three';
 import SculptBase from './SculptBase';
 
 class Drag extends SculptBase {
+    // Drag 類別的屬性型別定義
     private _dragDir: THREE.Vector3;
     private _dragDirSym: THREE.Vector3;
     private _idAlpha: number;
 
     constructor(main: any) {
+        // 呼叫父類別的建構式
         super(main);
 
+        // 為 THREE.Vector3 的物件分配記憶體空間
         this._dragDir = new THREE.Vector3(0.0, 0.0, 0.0);
         this._dragDirSym = new THREE.Vector3(0.0, 0.0, 0.0);
         this._idAlpha = 0;
     }
 
     /**
+     * 
      * 進行雕刻筆劃操作
-     * 根據滑鼠的移動進行雕刻的筆劃操作，並更新模型
-     */
+     * 根據滑鼠的移動進行雕刻的筆劃操作，並更新模型 
+     **/ 
     sculptStroke(): void {
+
+        console.log("sculptStroke called");
+
         const main = this._main;
         const mesh = this.getMesh();
         const picking = main.getPicking();
-        const pickingSym = main.getSculptManager().getSymmetry() ? main.getPickingSymmetry() : null;
+        const pickingSym = false;
+        // const pickingSym = main.getSculptManager().getSymmetry() ? main.getPickingSymmetry() : null;
 
         const dx = main._mouseX - this._lastMouseX;
         const dy = main._mouseY - this._lastMouseY;
@@ -33,12 +41,15 @@ class Drag extends SculptBase {
         let mouseX = this._lastMouseX;
         let mouseY = this._lastMouseY;
 
-        if (!picking.getMesh()) return;
+        // if (!picking.getMesh()) return;
+        if (!picking || typeof picking.getMesh !== 'function' || !picking.getMesh()) {
+            return;
+        }
         picking._mesh = mesh;
         if (pickingSym) {
-            pickingSym._mesh = mesh;
-            pickingSym.getIntersectionPoint().copy(picking.getIntersectionPoint());
-            this.mirrorPoint(pickingSym.getIntersectionPoint(), mesh.getSymmetryOrigin(), mesh.getSymmetryNormal());
+            // pickingSym._mesh = mesh;
+            // pickingSym.getIntersectionPoint().copy(picking.getIntersectionPoint());
+            // this.mirrorPoint(pickingSym.getIntersectionPoint(), mesh.getSymmetryOrigin(), mesh.getSymmetryNormal());
         }
 
         for (let i = 0.0; i < 1.0; i += step) {

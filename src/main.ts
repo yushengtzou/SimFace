@@ -72,18 +72,19 @@ function main() {
                 dragTool.sculptStroke();
             }
         };
-        
+
         function onMouseDown(event: MouseEvent) {
             console.log('Mousedown event triggered');
-
+        
             const clickMouse = new THREE.Vector2();
             clickMouse.x = (event.clientX / window.innerWidth) * 2 - 1;
             clickMouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
             sceneObjects.raycaster.setFromCamera(clickMouse, sceneObjects.camera);
             const found = sceneObjects.raycaster.intersectObjects(sceneObjects.scene.children);
-
+        
             if (found.length > 0) {
-                // 如果射線檢測到 3D 模型，則添加 mousemove 事件監聽器
+                // 如果射線檢測到 3D 模型，則開始拖曳
+                isDragging = true;
                 window.addEventListener('mousemove', onMouseMove);
             }
         }
