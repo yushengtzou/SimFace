@@ -1,7 +1,6 @@
 // 引入相關套件與副程式
 import * as THREE from 'three';
 import { constructScene } from './scene';
-import { elevate } from './tools/deformation/deform';
 import Drag from './tools/deformation/Drag';
 // 主程式
 function main() {
@@ -44,25 +43,39 @@ function main() {
         });
         // 視窗事件監聽，鼠標點擊於模型上，頂點Z座標位置改變
         // window.addEventListener('click', (event) => elevate(sceneObjects.raycaster, sceneObjects.scene, sceneObjects.camera)(event));
+        // 鼠標移動時，呼叫 elevate 函數，使周圍頂點的 X, Y, Z 座標位置改變
+        // const onMouseMove = elevate(sceneObjects.raycaster, sceneObjects.scene, sceneObjects.camera);
         // 實例化 Drag 類別
         const dragTool = new Drag(Object.assign(Object.assign({}, sceneObjects), { getPicking: () => ({ /* Your picking logic */}) }));
-        // 鼠標移動時，呼叫 Drag 類別的 sculptStroke 函式，使周圍頂點的 X, Y, Z 座標位置改變
-        // function onMouseMove(event: MouseEvent) {
-        //     dragTool._main._mouseX = event.clientX;
-        //     dragTool._main._mouseY = event.clientY;
-        //     dragTool.sculptStroke();
-        // }
-        const onMouseMove = elevate(sceneObjects.raycaster, sceneObjects.scene, sceneObjects.camera);
-        // 視窗事件監聽，鼠標按下並移動
-        window.addEventListener('mousedown', () => {
+        let isDragging = false;
+        // 鼠標移動時，呼叫 Drag 類別的 sculptStroke 函數，使周圍頂點的 X, Y, Z 座標位置改變
+        const onMouseMove = (event) => {
+            if (isDragging) {
+                dragTool._main._mouseX = event.clientX;
+                dragTool._main._mouseY = event.clientY;
+                dragTool.sculptStroke();
+            }
+        };
+        function onMouseDown(event) {
             console.log('Mousedown event triggered');
-            window.addEventListener('mousemove', onMouseMove);
-        });
-        // 視窗事件監聽，鼠標鬆開停止監聽
-        window.addEventListener('mouseup', () => {
+            const clickMouse = new THREE.Vector2();
+            clickMouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+            clickMouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+            sceneObjects.raycaster.setFromCamera(clickMouse, sceneObjects.camera);
+            const found = sceneObjects.raycaster.intersectObjects(sceneObjects.scene.children);
+            if (found.length > 0) {
+                // 如果射線檢測到 3D 模型，則添加 mousemove 事件監聽器
+                window.addEventListener('mousemove', onMouseMove);
+            }
+        }
+        function onMouseUp() {
             console.log('Mouseup event triggered');
             window.removeEventListener('mousemove', onMouseMove);
-        });
+        }
+        // 視窗事件監聽，鼠標按下
+        window.addEventListener('mousedown', onMouseDown);
+        // 視窗事件監聽，鼠標鬆開
+        window.addEventListener('mouseup', onMouseUp);
         // 視窗事件監聽，曲線擬合按鈕點擊
         // fit_curve.addEventListener('click', () => {
         //     console.log("視窗事件監聽，曲線擬合按鈕點擊");

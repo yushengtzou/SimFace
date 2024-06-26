@@ -4,7 +4,6 @@ import { LineMaterial } from 'three/examples/jsm/lines/LineMaterial.js';
 import { LineGeometry } from 'three/examples/jsm/lines/LineGeometry.js';
 import { kdTree } from 'kd-tree-javascript';
 
-
 let navbarHeight: number = 0;
 
 interface KdTree<T> {
@@ -15,7 +14,6 @@ interface KdTree<T> {
     isValid: () => boolean;
 }
 
-
 interface Node<T> {
     obj: T;
     left: Node<T> | null;
@@ -23,7 +21,6 @@ interface Node<T> {
     parent: Node<T> | null;
     dimension: number;
 }
-
 
 // 鼠標點擊，標記點於模型上
 export function onMouseClick(event: MouseEvent, scene: THREE.Scene, camera: THREE.PerspectiveCamera, raycaster: THREE.Raycaster, markedPoints: THREE.Vector3[]) {
@@ -69,7 +66,6 @@ export function onMouseClick(event: MouseEvent, scene: THREE.Scene, camera: THRE
     }
 }
 
-
 // 曲線擬合
 export function createCurve(points: THREE.Vector3[], scene: THREE.Scene, colors: THREE.Color ): THREE.Vector3[] {
     const curve = new THREE.CatmullRomCurve3(points, true);
@@ -97,8 +93,6 @@ export function createCurve(points: THREE.Vector3[], scene: THREE.Scene, colors:
     return pointsOnCurve;
 }
 
-
-
 // Extract Vertices: The getVerticesFromGeometry function extracts vertices from BufferGeometry
 function getVerticesFromGeometry(geometry: THREE.BufferGeometry): THREE.Vector3[] {
     const vertices: THREE.Vector3[] = [];
@@ -111,7 +105,6 @@ function getVerticesFromGeometry(geometry: THREE.BufferGeometry): THREE.Vector3[
     }
     return vertices;
 }
-
 
 // Find Closest Vertex: The findClosestVertex function finds the closest vertex to a given point.
 // function findClosestVertex(point: THREE.Vector3, vertices: THREE.Vector3[]): THREE.Vector3 {
@@ -145,7 +138,6 @@ function getVerticesFromGeometry(geometry: THREE.BufferGeometry): THREE.Vector3[
 //     return closestVertices;
 // }
 
-
 // Helper function to compare points with a tolerance
 function arePointsEqual(p1: THREE.Vector3, p2: THREE.Vector3, tolerance: number = 1e-6): boolean {
     return Math.abs(p1.x - p2.x) < tolerance &&
@@ -153,12 +145,10 @@ function arePointsEqual(p1: THREE.Vector3, p2: THREE.Vector3, tolerance: number 
         Math.abs(p1.z - p2.z) < tolerance;
 }
 
-
 // Function to check if a point is in the mesh vertices
 function isPointInMeshVertices(point: THREE.Vector3, meshVertices: THREE.Vector3[]): boolean {
     return meshVertices.some(vertex => arePointsEqual(point, vertex));
 }
-
 
 // 用 K-D Tree 儲存網目頂點資料，以搜尋最近的頂點
 export function findClosestVertices(curvePoints: THREE.Vector3[], meshGeometry: THREE.BufferGeometry): THREE.Vector3[] {
@@ -205,7 +195,6 @@ export function findClosestVertices(curvePoints: THREE.Vector3[], meshGeometry: 
     return closestVertices;
 }
 
-
 // Helper function to extract face centroids from BufferGeometry
 function getFaceCentroidsFromGeometry(geometry: THREE.BufferGeometry): THREE.Vector3[] {
     const centroids: THREE.Vector3[] = [];
@@ -239,7 +228,6 @@ function getFaceCentroidsFromGeometry(geometry: THREE.BufferGeometry): THREE.Vec
 
     return centroids;
 }
-
 
 // Main function to find closest faces
 export function findClosestFaces(curvePoints: THREE.Vector3[], meshGeometry: THREE.BufferGeometry | null): number[] {

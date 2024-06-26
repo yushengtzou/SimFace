@@ -5,7 +5,6 @@ const MAX_CLICK_DISTANCE = 0.1; // 最大點擊距離
 // 鼠標點擊於模型上，頂點 Z 座標位置改變
 export function elevate(raycaster, scene, camera) {
     return function (event) {
-        console.log("elevate() being called");
         // THREE 射線檢測器
         clickMouse.x = (event.clientX / window.innerWidth) * 2 - 1;
         clickMouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
