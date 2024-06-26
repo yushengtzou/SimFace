@@ -1,21 +1,11 @@
 import * as THREE from 'three';
-// Overview sculpt :
-// start (check if we hit the mesh, start state stack) -> startSculpt
-// startSculpt (init stuffs specific to the tool) -> sculptStroke
-// sculptStroke (handle sculpt stroke by throttling/smoothing stroke) -> makeStroke
-// makeStroke (handle symmetry and picking before sculping) -> stroke
-// stroke (tool specific, move vertices, etc)
-// update -> sculptStroke
-class Drag {
+import SculptBase from './SculptBase';
+class Drag extends SculptBase {
     constructor(main) {
-        this._main = main;
-        this._radius = 150;
-        this._dragDir = new THREE.Vector3();
-        this._dragDirSym = new THREE.Vector3();
+        super(main);
+        this._dragDir = new THREE.Vector3(0.0, 0.0, 0.0);
+        this._dragDirSym = new THREE.Vector3(0.0, 0.0, 0.0);
         this._idAlpha = 0;
-        this._lastMouseX = 0;
-        this._lastMouseY = 0;
-        this._lockPosition = false; // 假設 _lockPosition 需要被定義
     }
     /**
      * 進行雕刻筆劃操作
@@ -25,7 +15,7 @@ class Drag {
         const main = this._main;
         const mesh = this.getMesh();
         const picking = main.getPicking();
-        // const pickingSym = main.getSculptManager().getSymmetry() ? main.getPickingSymmetry() : null;
+        const pickingSym = main.getSculptManager().getSymmetry() ? main.getPickingSymmetry() : null;
         const dx = main._mouseX - this._lastMouseX;
         const dy = main._mouseY - this._lastMouseY;
         const dist = Math.sqrt(dx * dx + dy * dy);
@@ -36,13 +26,14 @@ class Drag {
         if (!picking.getMesh())
             return;
         picking._mesh = mesh;
-        // if (pickingSym) {
-        //     pickingSym._mesh = mesh;
-        //     pickingSym.getIntersectionPoint().copy(picking.getIntersectionPoint());
-        //     this.mirrorPoint(pickingSym.getIntersectionPoint(), mesh.getSymmetryOrigin(), mesh.getSymmetryNormal());
-        // }
+        if (pickingSym) {
+            pickingSym._mesh = mesh;
+            pickingSym.getIntersectionPoint().copy(picking.getIntersectionPoint());
+            this.mirrorPoint(pickingSym.getIntersectionPoint(), mesh.getSymmetryOrigin(), mesh.getSymmetryNormal());
+        }
         for (let i = 0.0; i < 1.0; i += step) {
-            // if (!this.makeStroke(mouseX, mouseY, picking, pickingSym)) break;
+            if (!this.makeStroke(mouseX, mouseY, picking, pickingSym))
+                break;
             mouseX += dx;
             mouseY += dy;
         }
@@ -182,33 +173,6 @@ class Drag {
         const line = new THREE.Vector3().subVectors(end, start);
         const projected = new THREE.Vector3().subVectors(point, start).projectOnVector(line);
         return projected.add(start);
-    }
-    /**
-     * 獲取當前使用的網格
-     * @returns 網格物件
-     */
-    getMesh() {
-        // 取得網格的佔位方法
-        // 需要替換為實際實現
-        return this._main.getMesh();
-    }
-    /**
-     * 更新渲染
-     */
-    updateRender() {
-        // 更新渲染的佔位方法
-        // 需要替換為實際實現
-        this._main.updateRender();
-    }
-    /**
-     * 動態拓樸操作
-     * @param picking - 採樣物件
-     * @returns 更新後的頂點索引數組
-     */
-    dynamicTopology(picking) {
-        // 動態拓樸的佔位方法
-        // 需要替換為實際實現
-        return picking.dynamicTopology();
     }
 }
 export default Drag;

@@ -1,19 +1,21 @@
 import * as THREE from 'three';
 
-
 const clickMouse = new THREE.Vector2(); // create once
 const vector3 = new THREE.Vector3(); // create once
 const MAX_CLICK_DISTANCE = 0.1; // 最大點擊距離
 
-
 // 鼠標點擊於模型上，頂點 Z 座標位置改變
 export function elevate(raycaster: THREE.Raycaster, scene: THREE.Scene, camera: THREE.PerspectiveCamera) {
     return function (event: MouseEvent) {
+
+        console.log("elevate() being called");
+
         // THREE 射線檢測器
         clickMouse.x = (event.clientX / window.innerWidth) * 2 - 1;
         clickMouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
         raycaster.setFromCamera(clickMouse, camera);
         const found = raycaster.intersectObjects(scene.children);
+
         if (found.length > 0 && (found[0].object as THREE.Mesh).geometry) {
             const mesh = found[0].object as THREE.Mesh;
             const geometry = mesh.geometry as THREE.BufferGeometry;

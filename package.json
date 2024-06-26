@@ -16,12 +16,18 @@
     "web-vitals": "^2.1.4"
   },
   "devDependencies": {
+    "@eslint/compat": "^1.1.0",
+    "@eslint/js": "^9.5.0",
     "@types/kd-tree-javascript": "^1.0.3",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
     "@types/three": "^0.164.1",
+    "eslint": "^9.5.0",
+    "eslint-plugin-react": "^7.34.3",
+    "globals": "^15.6.0",
     "react-scripts": "^5.0.1",
     "tailwindcss": "^3.4.4",
+    "typescript-eslint": "^7.14.1",
     "vite": "^5.2.13"
   },
   "type": "module",

@@ -1,23 +1,10 @@
 import * as THREE from 'three';
 import SculptBase from './SculptBase';
 
-
-// Overview sculpt :
-// start (check if we hit the mesh, start state stack) -> startSculpt
-// startSculpt (init stuffs specific to the tool) -> sculptStroke
-
-// sculptStroke (handle sculpt stroke by throttling/smoothing stroke) -> makeStroke
-// makeStroke (handle symmetry and picking before sculping) -> stroke
-// stroke (tool specific, move vertices, etc)
-
-// update -> sculptStroke
-
-
 class Drag extends SculptBase {
     private _dragDir: THREE.Vector3;
     private _dragDirSym: THREE.Vector3;
     private _idAlpha: number;
-
 
     constructor(main: any) {
         super(main);
@@ -26,7 +13,6 @@ class Drag extends SculptBase {
         this._dragDirSym = new THREE.Vector3(0.0, 0.0, 0.0);
         this._idAlpha = 0;
     }
-
 
     /**
      * 進行雕刻筆劃操作
@@ -67,7 +53,6 @@ class Drag extends SculptBase {
         this._lastMouseY = main._mouseY;
     }
 
-
     /**
      * 進行筆劃操作
      * 
@@ -96,7 +81,6 @@ class Drag extends SculptBase {
         return true;
     }
 
-
     /**
      * 進行雕刻筆劃操作
      * 
@@ -115,7 +99,6 @@ class Drag extends SculptBase {
         const mesh = this.getMesh();
         mesh.updateGeometry(mesh.getFacesFromVertices(iVertsInRadius), iVertsInRadius);
     }
-
 
     /**
      * 拖動變形
@@ -159,7 +142,6 @@ class Drag extends SculptBase {
         }
     }
 
-
     /**
      * 設定拖動方向資訊
      * 
@@ -192,7 +174,6 @@ class Drag extends SculptBase {
         eyeDir.copy(vFar).sub(vNear).normalize();
     }
 
-
     /**
      * 鏡像點
      * 
@@ -205,7 +186,6 @@ class Drag extends SculptBase {
         const distance = toPoint.dot(normal);
         point.sub(normal.clone().multiplyScalar(2 * distance));
     }
-
 
     /**
      * 計算點在線上的位置
@@ -220,8 +200,6 @@ class Drag extends SculptBase {
         const projected = new THREE.Vector3().subVectors(point, start).projectOnVector(line);
         return projected.add(start);
     }
-
 }
-
 
 export default Drag; 

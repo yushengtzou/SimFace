@@ -1,7 +1,6 @@
 import Enums from './misc/Enums';
 import Utils from './misc/Utils';
 
-
 // 概述雕刻操作流程：
 // start（檢查是否點擊到網格，開始狀態堆疊） -> startSculpt
 // startSculpt（初始化工具特定的內容） -> sculptStroke
@@ -10,16 +9,14 @@ import Utils from './misc/Utils';
 // stroke（工具特定的操作，移動頂點等）
 // update -> sculptStroke
 
-
-class SculptBase {
-    protected _main: any; 
+abstract class SculptBase {
+    public _main: any; 
+    public _lastMouseX: number;
+    public _lastMouseY: number;
     protected _cbContinuous: () => void;
-    protected _lastMouseX: number;
-    protected _lastMouseY: number;
     protected _forceToolMesh: any;
     protected _lockPosition: boolean;
     protected _radius: number;
-
 
     constructor(main: any) {
         this._main = main;
@@ -31,6 +28,8 @@ class SculptBase {
         this._radius = 1;
     }
 
+    abstract stroke(picking: any, isSymmetry: boolean): void;
+
     // 引入 three.js 的 BufferGeometry 作為 mesh 的資料來源
     setToolMesh(mesh: any): void {
         this._forceToolMesh = mesh;
@@ -38,7 +37,8 @@ class SculptBase {
 
     // 回傳引入的 BufferGeometry
     getMesh(): any {
-        return this._forceToolMesh || this._main.getMesh();
+        // return this._forceToolMesh || this._main.getMesh();
+        return this._forceToolMesh;
     }
 
     start(ctrl: any): boolean {
@@ -197,7 +197,6 @@ class SculptBase {
         }
     }
 
-
     // Update lock position
     updateContinuous(): void {
         if (this._lockPosition) return this.update(true);
@@ -207,7 +206,6 @@ class SculptBase {
         this.makeStroke(main._mouseX, main._mouseY, picking, pickingSym);
         this.updateRender();
     }
-
 
     // Return the vertices that point toward the camera
     getFrontVertices(iVertsInRadius: Uint32Array, eyeDir: Float32Array): Uint32Array {
@@ -227,7 +225,6 @@ class SculptBase {
         }
         return new Uint32Array(iVertsFront.subarray(0, acc));
     }
-
 
     // Compute average normal of a group of vertices with culling
     areaNormal(iVerts: Uint32Array): number[] | undefined {
@@ -250,7 +247,6 @@ class SculptBase {
         return [anx * invLen, any * invLen, anz * invLen];
     }
 
-
     // Compute average center of a group of vertices (with culling)
     areaCenter(iVerts: Uint32Array): number[] {
         const mesh = this.getMesh();
@@ -272,7 +268,6 @@ class SculptBase {
         return [ax / acc, ay / acc, az / acc];
     }
 
-
     // Updates the vertices original coords that are sculpted for the first time
     updateProxy(iVerts: Uint32Array): void {
         const mesh = this.getMesh();
@@ -291,7 +286,6 @@ class SculptBase {
             }
         }
     }
-
 
     // Laplacian smooth. Special rule for vertex on the edge of the mesh.
     laplacianSmooth(iVerts: Uint32Array, smoothVerts: Float32Array, vField?: Float32Array): void {
@@ -445,6 +439,5 @@ class SculptBase {
         return (this._radius || 1) * this._main.getPixelRatio();
     }
 }
-
 
 export default SculptBase;

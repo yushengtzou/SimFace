@@ -1,6 +1,7 @@
 // 引入相關套件與副程式
 import * as THREE from 'three';
 import { constructScene } from './scene';
+import { elevate } from './tools/deformation/deform';
 import Drag from './tools/deformation/Drag';
 // 主程式
 function main() {
@@ -12,7 +13,6 @@ function main() {
         renderer: null,
         raycaster: new THREE.Raycaster(),
         faceMesh: new THREE.Object3D,
-        getMesh: () => sceneObjects.faceMesh
     };
     // 宣告場景變數
     const sceneParams = {
@@ -42,22 +42,27 @@ function main() {
                 console.log('Material:', child.material);
             }
         });
-        // Initialize Drag tool
-        const dragTool = new Drag(Object.assign(Object.assign({}, sceneObjects), { getPicking: () => ({ /* Your picking logic */}) }));
         // 視窗事件監聽，鼠標點擊於模型上，頂點Z座標位置改變
         // window.addEventListener('click', (event) => elevate(sceneObjects.raycaster, sceneObjects.scene, sceneObjects.camera)(event));
-        // 視窗事件監聽，鼠標點擊並移動於模型上，啟用 Grab 形變，使周圍頂點X, Y, Z座標位置改變
+        // 實例化 Drag 類別
+        const dragTool = new Drag(Object.assign(Object.assign({}, sceneObjects), { getPicking: () => ({ /* Your picking logic */}) }));
+        // 鼠標移動時，呼叫 Drag 類別的 sculptStroke 函式，使周圍頂點的 X, Y, Z 座標位置改變
+        // function onMouseMove(event: MouseEvent) {
+        //     dragTool._main._mouseX = event.clientX;
+        //     dragTool._main._mouseY = event.clientY;
+        //     dragTool.sculptStroke();
+        // }
+        const onMouseMove = elevate(sceneObjects.raycaster, sceneObjects.scene, sceneObjects.camera);
+        // 視窗事件監聽，鼠標按下並移動
         window.addEventListener('mousedown', () => {
+            console.log('Mousedown event triggered');
             window.addEventListener('mousemove', onMouseMove);
         });
+        // 視窗事件監聽，鼠標鬆開停止監聽
         window.addEventListener('mouseup', () => {
+            console.log('Mouseup event triggered');
             window.removeEventListener('mousemove', onMouseMove);
         });
-        function onMouseMove(event) {
-            dragTool._main._mouseX = event.clientX;
-            dragTool._main._mouseY = event.clientY;
-            dragTool.sculptStroke();
-        }
         // 視窗事件監聽，曲線擬合按鈕點擊
         // fit_curve.addEventListener('click', () => {
         //     console.log("視窗事件監聽，曲線擬合按鈕點擊");

@@ -1,84 +1,91 @@
-"use strict";
-// import Utils from './Utils';
-// // enum marked with /!\ shouldn't change (serialized in sgl file)
-// var Enums = {};
-// Enums.Action = {
-//     NOTHING: 0,
-//     MASK_EDIT: 1,
-//     SCULPT_EDIT: 2,
-//     CAMERA_ZOOM: 3,
-//     CAMERA_ROTATE: 4,
-//     CAMERA_PAN: 5,
-//     CAMERA_PAN_ZOOM_ALT: 6
-// };
-// // sculpt tools
-// Enums.Tools = {
-//     BRUSH: 0,
-//     INFLATE: 1,
-//     TWIST: 2,
-//     SMOOTH: 3,
-//     FLATTEN: 4,
-//     PINCH: 5,
-//     CREASE: 6,
-//     DRAG: 7,
-//     PAINT: 8,
-//     MOVE: 9,
-//     MASKING: 10,
-//     LOCALSCALE: 11,
-//     TRANSFORM: 12
-// };
-// // display shader type
-// Enums.Shader = {
-//     PBR: 0, // /!\ 
-//     FLAT: 1,
-//     NORMAL: 2, // /!\ 
-//     WIREFRAME: 3,
-//     UV: 4, // /!\ 
-//     MATCAP: 5, // /!\ 
-//     SELECTION: 6,
-//     BACKGROUND: 7,
-//     MERGE: 8,
-//     FXAA: 9,
-//     CONTOUR: 10,
-//     PAINTUV: 11,
-//     BLUR: 12
-// };
-// // camera projection
-// Enums.Projection = {
-//     PERSPECTIVE: 0, // /!\ 
-//     ORTHOGRAPHIC: 1 // /!\ 
-// };
-// // camera mode
-// Enums.CameraMode = {
-//     ORBIT: 0, // /!\ 
-//     SPHERICAL: 1, // /!\ 
-//     PLANE: 2 // /!\ 
-// };
-// // used by multiresolution to choose which multi res level to render
-// Enums.MultiState = {
-//     NONE: 0,
-//     SCULPT: 1,
-//     CAMERA: 2,
-//     PICKING: 3
-// };
-// // actions linked to shortcuts
-// // tools index must match
-// var acc = Object.keys(Enums.Tools).length;
-// Enums.KeyAction = Utils.extend({
-//     INTENSITY: acc++,
-//     RADIUS: acc++,
-//     NEGATIVE: acc++,
-//     PICKER: acc++,
-//     DELETE: acc++,
-//     CAMERA_FRONT: acc++,
-//     CAMERA_TOP: acc++,
-//     CAMERA_LEFT: acc++,
-//     CAMERA_RESET: acc++,
-//     STRIFE_LEFT: acc++,
-//     STRIFE_RIGHT: acc++,
-//     STRIFE_UP: acc++,
-//     STRIFE_DOWN: acc++,
-//     WIREFRAME: acc++,
-//     REMESH: acc++
-// }, Enums.Tools);
-// export default Enums;
+import Utils from './Utils';
+// Enum 標誌（/!\）不應該改變（在 sgl 文件中序列化）
+var Enums;
+(function (Enums) {
+    let Action;
+    (function (Action) {
+        Action[Action["NOTHING"] = 0] = "NOTHING";
+        Action[Action["MASK_EDIT"] = 1] = "MASK_EDIT";
+        Action[Action["SCULPT_EDIT"] = 2] = "SCULPT_EDIT";
+        Action[Action["CAMERA_ZOOM"] = 3] = "CAMERA_ZOOM";
+        Action[Action["CAMERA_ROTATE"] = 4] = "CAMERA_ROTATE";
+        Action[Action["CAMERA_PAN"] = 5] = "CAMERA_PAN";
+        Action[Action["CAMERA_PAN_ZOOM_ALT"] = 6] = "CAMERA_PAN_ZOOM_ALT";
+    })(Action = Enums.Action || (Enums.Action = {}));
+    // 雕刻工具
+    let Tools;
+    (function (Tools) {
+        Tools[Tools["BRUSH"] = 0] = "BRUSH";
+        Tools[Tools["INFLATE"] = 1] = "INFLATE";
+        Tools[Tools["TWIST"] = 2] = "TWIST";
+        Tools[Tools["SMOOTH"] = 3] = "SMOOTH";
+        Tools[Tools["FLATTEN"] = 4] = "FLATTEN";
+        Tools[Tools["PINCH"] = 5] = "PINCH";
+        Tools[Tools["CREASE"] = 6] = "CREASE";
+        Tools[Tools["DRAG"] = 7] = "DRAG";
+        Tools[Tools["PAINT"] = 8] = "PAINT";
+        Tools[Tools["MOVE"] = 9] = "MOVE";
+        Tools[Tools["MASKING"] = 10] = "MASKING";
+        Tools[Tools["LOCALSCALE"] = 11] = "LOCALSCALE";
+        Tools[Tools["TRANSFORM"] = 12] = "TRANSFORM";
+    })(Tools = Enums.Tools || (Enums.Tools = {}));
+    // 顯示著色器類型
+    let Shader;
+    (function (Shader) {
+        Shader[Shader["PBR"] = 0] = "PBR";
+        Shader[Shader["FLAT"] = 1] = "FLAT";
+        Shader[Shader["NORMAL"] = 2] = "NORMAL";
+        Shader[Shader["WIREFRAME"] = 3] = "WIREFRAME";
+        Shader[Shader["UV"] = 4] = "UV";
+        Shader[Shader["MATCAP"] = 5] = "MATCAP";
+        Shader[Shader["SELECTION"] = 6] = "SELECTION";
+        Shader[Shader["BACKGROUND"] = 7] = "BACKGROUND";
+        Shader[Shader["MERGE"] = 8] = "MERGE";
+        Shader[Shader["FXAA"] = 9] = "FXAA";
+        Shader[Shader["CONTOUR"] = 10] = "CONTOUR";
+        Shader[Shader["PAINTUV"] = 11] = "PAINTUV";
+        Shader[Shader["BLUR"] = 12] = "BLUR";
+    })(Shader = Enums.Shader || (Enums.Shader = {}));
+    // 相機投影
+    let Projection;
+    (function (Projection) {
+        Projection[Projection["PERSPECTIVE"] = 0] = "PERSPECTIVE";
+        Projection[Projection["ORTHOGRAPHIC"] = 1] = "ORTHOGRAPHIC"; // /!\
+    })(Projection = Enums.Projection || (Enums.Projection = {}));
+    // 相機模式
+    let CameraMode;
+    (function (CameraMode) {
+        CameraMode[CameraMode["ORBIT"] = 0] = "ORBIT";
+        CameraMode[CameraMode["SPHERICAL"] = 1] = "SPHERICAL";
+        CameraMode[CameraMode["PLANE"] = 2] = "PLANE"; // /!\
+    })(CameraMode = Enums.CameraMode || (Enums.CameraMode = {}));
+    // 用於多分辨率選擇渲染的多分辨率級別
+    let MultiState;
+    (function (MultiState) {
+        MultiState[MultiState["NONE"] = 0] = "NONE";
+        MultiState[MultiState["SCULPT"] = 1] = "SCULPT";
+        MultiState[MultiState["CAMERA"] = 2] = "CAMERA";
+        MultiState[MultiState["PICKING"] = 3] = "PICKING";
+    })(MultiState = Enums.MultiState || (Enums.MultiState = {}));
+    // 與快捷鍵相關的操作
+    // 工具索引必須匹配
+    let acc = Object.keys(Tools).length;
+    Enums.KeyAction = Utils.extend({
+        INTENSITY: acc++,
+        RADIUS: acc++,
+        NEGATIVE: acc++,
+        PICKER: acc++,
+        DELETE: acc++,
+        CAMERA_FRONT: acc++,
+        CAMERA_TOP: acc++,
+        CAMERA_LEFT: acc++,
+        CAMERA_RESET: acc++,
+        STRIFE_LEFT: acc++,
+        STRIFE_RIGHT: acc++,
+        STRIFE_UP: acc++,
+        STRIFE_DOWN: acc++,
+        WIREFRAME: acc++,
+        REMESH: acc++
+    }, Tools);
+})(Enums || (Enums = {}));
+export default Enums;
