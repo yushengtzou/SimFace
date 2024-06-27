@@ -3,7 +3,8 @@ import * as THREE from 'three';
 import { constructScene } from './scene';
 import { createCurve, onMouseClick, findClosestVertices, findClosestFaces } from './tools/surface';
 import { elevate } from './tools/deformation/deform';
-import Drag from './tools/deformation/Drag'; 
+// import Drag from './tools/deformation/Drag'; 
+import Drag from './tools/deformation/SimpleDrag';
 
 // 主程式
 function main() {
@@ -56,49 +57,101 @@ function main() {
         // 鼠標移動時，呼叫 elevate 函數，使周圍頂點的 X, Y, Z 座標位置改變
         // const onMouseMove = elevate(sceneObjects.raycaster, sceneObjects.scene, sceneObjects.camera);
 
-        // 實例化 Drag 類別
-        const dragTool = new Drag({
-            ...sceneObjects,
-            getPicking: () => ({ /* Your picking logic */ })
-        });
-        
+
+        const dragTool = new Drag(sceneObjects);
         let isDragging = false;
-        
-        // 鼠標移動時，呼叫 Drag 類別的 sculptStroke 函數，使周圍頂點的 X, Y, Z 座標位置改變
+        let startMouseX = 0;
+        let startMouseY = 0;
+
+        // Handle mouse move events to deform the mesh vertices
         const onMouseMove = (event: MouseEvent) => {
             if (isDragging) {
                 dragTool._main._mouseX = event.clientX;
                 dragTool._main._mouseY = event.clientY;
+
+                // Update drag direction based on mouse movement
+                const deltaX = event.clientX - startMouseX;
+                const deltaY = event.clientY - startMouseY;
+                dragTool.dragDir.set(deltaX, deltaY, 1).normalize(); // Normalized direction vector
+
                 dragTool.sculptStroke();
             }
         };
 
         function onMouseDown(event: MouseEvent) {
             console.log('Mousedown event triggered');
-        
+
             const clickMouse = new THREE.Vector2();
             clickMouse.x = (event.clientX / window.innerWidth) * 2 - 1;
             clickMouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
             sceneObjects.raycaster.setFromCamera(clickMouse, sceneObjects.camera);
             const found = sceneObjects.raycaster.intersectObjects(sceneObjects.scene.children);
-        
+
             if (found.length > 0) {
-                // 如果射線檢測到 3D 模型，則開始拖曳
                 isDragging = true;
+                startMouseX = event.clientX;
+                startMouseY = event.clientY;
                 window.addEventListener('mousemove', onMouseMove);
             }
         }
 
         function onMouseUp() {
             console.log('Mouseup event triggered');
+            isDragging = false;
             window.removeEventListener('mousemove', onMouseMove);
         }
 
-        // 視窗事件監聽，鼠標按下
+        // Add event listeners for mouse down and up events
         window.addEventListener('mousedown', onMouseDown);
+        window.addEventListener('mouseup', onMouseUp);
+
+
+        // const handleDrag = drag(sceneObjects.raycaster, sceneObjects.scene, sceneObjects.camera);
+        // window.addEventListener('mousedown', handleDrag);
+
+        // 實例化 Drag 類別
+        // const dragTool = new Drag({
+        //     ...sceneObjects,
+        //     getPicking: () => ({ /* Your picking logic */ })
+        // });
+        
+        // let isDragging = false;
+        
+        // 鼠標移動時，呼叫 Drag 類別的 sculptStroke 函數，使周圍頂點的 X, Y, Z 座標位置改變
+        // const onMouseMove = (event: MouseEvent) => {
+        //     if (isDragging) {
+        //         dragTool._main._mouseX = event.clientX;
+        //         dragTool._main._mouseY = event.clientY;
+        //         dragTool.sculptStroke();
+        //     }
+        // };
+
+        // function onMouseDown(event: MouseEvent) {
+        //     console.log('Mousedown event triggered');
+        
+        //     const clickMouse = new THREE.Vector2();
+        //     clickMouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+        //     clickMouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+        //     sceneObjects.raycaster.setFromCamera(clickMouse, sceneObjects.camera);
+        //     const found = sceneObjects.raycaster.intersectObjects(sceneObjects.scene.children);
+        
+        //     if (found.length > 0) {
+        //         // 如果射線檢測到 3D 模型，則開始拖曳
+        //         isDragging = true;
+        //         window.addEventListener('mousemove', onMouseMove);
+        //     }
+        // }
+
+        // function onMouseUp() {
+        //     console.log('Mouseup event triggered');
+        //     window.removeEventListener('mousemove', onMouseMove);
+        // }
+
+        // 視窗事件監聽，鼠標按下
+        // window.addEventListener('mousedown', onMouseDown);
 
         // 視窗事件監聽，鼠標鬆開
-        window.addEventListener('mouseup', onMouseUp);        
+        // window.addEventListener('mouseup', onMouseUp);        
 
 
         // 視窗事件監聽，曲線擬合按鈕點擊

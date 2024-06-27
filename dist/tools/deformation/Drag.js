@@ -1,16 +1,23 @@
 import * as THREE from 'three';
-import SculptBase from './SculptBase';
-class Drag extends SculptBase {
+import Utils from './misc/Utils';
+class Drag {
     constructor(main) {
-        super(main);
+        this._main = main;
+        this._lastMouseX = 0.0;
+        this._lastMouseY = 0.0;
+        this._forceToolMesh = null;
+        this._lockPosition = false;
+        this._radius = 1;
+        // 為 THREE.Vector3 的物件分配記憶體空間
         this._dragDir = new THREE.Vector3(0.0, 0.0, 0.0);
         this._dragDirSym = new THREE.Vector3(0.0, 0.0, 0.0);
         this._idAlpha = 0;
     }
     /**
+     *
      * 進行雕刻筆劃操作
      * 根據滑鼠的移動進行雕刻的筆劃操作，並更新模型
-     */
+     **/
     sculptStroke() {
         console.log("sculptStroke called");
         const main = this._main;
@@ -177,6 +184,65 @@ class Drag extends SculptBase {
         const line = new THREE.Vector3().subVectors(end, start);
         const projected = new THREE.Vector3().subVectors(point, start).projectOnVector(line);
         return projected.add(start);
+    }
+    // 回傳引入的 BufferGeometry
+    getMesh() {
+        // return this._forceToolMesh || this._main.getMesh();
+        return this._forceToolMesh;
+    }
+    updateRender() {
+        this.updateMeshBuffers();
+        this._main.render();
+    }
+    dynamicTopology(picking) {
+        const mesh = this.getMesh();
+        let iVerts = picking.getPickedVertices();
+        if (!mesh.isDynamic)
+            return iVerts;
+        const subFactor = mesh.getSubdivisionFactor();
+        const decFactor = mesh.getDecimationFactor();
+        if (subFactor === 0.0 && decFactor === 0.0)
+            return iVerts;
+        if (iVerts.length === 0) {
+            iVerts = mesh.getVerticesFromFaces([picking.getPickedFace()]);
+            this._main.getStateManager().pushVertices(iVerts); // undo-redo
+        }
+        let iFaces = mesh.getFacesFromVertices(iVerts);
+        const radius2 = picking.getLocalRadius2();
+        const center = picking.getIntersectionPoint();
+        const d2Max = radius2 * (1.1 - subFactor) * 0.2;
+        const d2Min = (d2Max / 4.2025) * decFactor;
+        this._main.getStateManager().pushFaces(iFaces); // undo-redo
+        if (subFactor) {
+            iFaces = mesh.subdivide(iFaces, center, radius2, d2Max, this._main.getStateManager());
+        }
+        if (decFactor) {
+            iFaces = mesh.decimate(iFaces, center, radius2, d2Min, this._main.getStateManager());
+        }
+        iVerts = mesh.getVerticesFromFaces(iFaces);
+        const nbVerts = iVerts.length;
+        const sculptFlag = Utils.SCULPT_FLAG;
+        const vscf = mesh.getVerticesSculptFlags();
+        let iVertsInRadius = new Uint32Array(Utils.getMemory(nbVerts * 4), 0, nbVerts);
+        let acc = 0;
+        for (let i = 0; i < nbVerts; ++i) {
+            const iVert = iVerts[i];
+            if (vscf[iVert] === sculptFlag)
+                iVertsInRadius[acc++] = iVert;
+        }
+        iVertsInRadius = new Uint32Array(iVertsInRadius.subarray(0, acc));
+        mesh.updateTopology(iFaces, iVerts);
+        mesh.updateGeometry(iFaces, iVerts);
+        return iVertsInRadius;
+    }
+    updateMeshBuffers() {
+        const mesh = this.getMesh();
+        if (mesh.isDynamic) {
+            mesh.updateBuffers();
+        }
+        else {
+            mesh.updateGeometryBuffers();
+        }
     }
 }
 export default Drag;
