@@ -108,10 +108,10 @@ export function constructScene(sceneParams, sceneObjects, onLoadCallback) {
             sceneObjects.camera.aspect = canvas.clientWidth / canvas.clientHeight;
             sceneObjects.camera.updateProjectionMatrix();
         }
-        if (needsCheck && lastMouseEvent) {
-            checkMouseOverModel(lastMouseEvent);
-            needsCheck = false;
-        }
+        // if (needsCheck && lastMouseEvent) {
+        //     checkMouseOverModel(lastMouseEvent);
+        //     needsCheck = false;
+        // }
         sceneObjects.renderer.render(sceneObjects.scene, sceneObjects.camera);
         requestAnimationFrame(render);
     }

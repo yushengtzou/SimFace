@@ -62,16 +62,14 @@
     <canvas id="c"></canvas>
 
 
-    <div class="bg-gray-100 h-screen flex items-center justify-end pr-10">
-        <div class="fixed right-10 top-1/2 transform -translate-y-1/2 w-64 bg-white p-5 shadow-md rounded-md border border-gray-300">
-            <div class="text-center">
-                <p class="text-xl leading-7">Curves Tool</p>
-            </div>
-            <hr class="border-t border-gray-300 w-full my-4"> <!-- Full-width divider -->
-            <div class="py-2">
-                <p class="font-medium">Range</p>
-                <input type="range" class="slider w-full mt-2" min="0" max="100" value="50">
-            </div>
+    <div id="panel" class="fixed right-10 top-1/2 transform -translate-y-1/2 w-64 bg-white p-5 shadow-md rounded-md border border-gray-300 hidden flex flex-col justify-between">
+        <div class="text-center">
+            <p class="text-xl leading-7">Curves Tool</p>
+        </div>
+        <hr class="border-t border-gray-300 w-full my-4"> <!-- Full-width divider -->
+        <div class="py-2">
+            <p class="font-medium">Range</p>
+            <input type="range" id="distance-slider" class="slider w-full mt-2" min="0" max="100" value="50">
         </div>
     </div>
 
