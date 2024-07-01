@@ -2,8 +2,8 @@ import * as THREE from 'three';
 
 const clickMouse = new THREE.Vector2(); // create once
 const vector3 = new THREE.Vector3(); // create once
-let MAX_CLICK_DISTANCE = 0.1; // 固定的影响范围半径
-let deformDistance = 0.1; // 滑动条控制的变形距离
+let MAX_CLICK_DISTANCE = 0.5; // 固定的影響範圍半徑
+let deformDistance = 0.1; // 滑動條控制的變形距離
 let initialClickPoint: THREE.Vector3 | null = null;
 let initialGeometry: THREE.BufferGeometry | null = null;
 let targetMesh: THREE.Mesh | null = null;
@@ -50,7 +50,7 @@ function deformMesh(point: THREE.Vector3, mesh: THREE.Mesh, normal: THREE.Vector
 // 鼠標點擊於模型上，頂點 Z 座標位置改變
 export function elevate(raycaster: THREE.Raycaster, scene: THREE.Scene, camera: THREE.PerspectiveCamera) {
     return function (event: MouseEvent) {
-        // THREE 射線檢測器
+        // THREE 射線投射器
         clickMouse.x = (event.clientX / window.innerWidth) * 2 - 1;
         clickMouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
         raycaster.setFromCamera(clickMouse, camera);

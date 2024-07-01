@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 const clickMouse = new THREE.Vector2(); // create once
 const vector3 = new THREE.Vector3(); // create once
-let MAX_CLICK_DISTANCE = 0.1; // 固定的影响范围半径
+let MAX_CLICK_DISTANCE = 0.5; // 固定的影响范围半径
 let deformDistance = 0.1; // 滑动条控制的变形距离
 let initialClickPoint = null;
 let initialGeometry = null;
