@@ -13,21 +13,33 @@ function deformMesh(point: THREE.Vector3, mesh: THREE.Mesh, distance: number) {
     const position = geometry.attributes.position;
     const initialPosition = (initialGeometry as THREE.BufferGeometry).attributes.position;
 
+    const posArray = position.array;
+    const initPosArray = initialPosition.array;
+    const vector3World = new THREE.Vector3();
+
     for (let i = 0; i < position.count; i++) {
+        const ix = i * 3;
+        const iy = ix + 1;
+        const iz = ix + 2;
+
         vector3.set(
-            initialPosition.getX(i),
-            initialPosition.getY(i),
-            initialPosition.getZ(i)
+            initPosArray[ix],
+            initPosArray[iy],
+            initPosArray[iz]
         );
 
-        const toWorld = mesh.localToWorld(vector3.clone());
-        const dist = point.distanceTo(toWorld);
+        // Use local to world transformation only once per vertex
+        vector3World.copy(vector3).applyMatrix4(mesh.matrixWorld);
+        const dist = point.distanceTo(vector3World);
+
         if (dist < distance) {
-            position.setZ(i, initialPosition.getZ(i) + (distance - dist));
+            const newZ = initPosArray[iz] + (distance - dist);
+            posArray[iz] = newZ;
         }
     }
+
     geometry.computeVertexNormals();
-    geometry.attributes.position.needsUpdate = true;
+    position.needsUpdate = true;
 }
 
 // 鼠標點擊於模型上，頂點 Z 座標位置改變
@@ -68,5 +80,4 @@ if (slider) {
         }
     });
 }
-
 
