@@ -20,7 +20,7 @@ SimFace focuses on simulating and visualizing patients' facelifts, where users w
 
 ## Tools Used
 - **3D Graphics**: Three.js, three-bvh-csg
-- **Front-end Framework**: Bootstrap5
+- **Front-end Framework**: Tailwind CSS
 - **Frontend UI Library**: React
 - **Web Application Framework**: Node.js
 - **Development Server**: Vite
