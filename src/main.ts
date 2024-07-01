@@ -58,52 +58,52 @@ function main() {
         // const onMouseMove = elevate(sceneObjects.raycaster, sceneObjects.scene, sceneObjects.camera);
 
 
-        const dragTool = new Drag(sceneObjects);
-        let isDragging = false;
-        let startMouseX = 0;
-        let startMouseY = 0;
+        // const dragTool = new Drag(sceneObjects);
+        // let isDragging = false;
+        // let startMouseX = 0;
+        // let startMouseY = 0;
 
         // Handle mouse move events to deform the mesh vertices
-        const onMouseMove = (event: MouseEvent) => {
-            if (isDragging) {
-                dragTool._main._mouseX = event.clientX;
-                dragTool._main._mouseY = event.clientY;
+        // const onMouseMove = (event: MouseEvent) => {
+        //     if (isDragging) {
+        //         dragTool._main._mouseX = event.clientX;
+        //         dragTool._main._mouseY = event.clientY;
 
-                // Update drag direction based on mouse movement
-                const deltaX = event.clientX - startMouseX;
-                const deltaY = event.clientY - startMouseY;
-                dragTool.dragDir.set(deltaX, deltaY, 1).normalize(); // Normalized direction vector
+        //         // Update drag direction based on mouse movement
+        //         const deltaX = event.clientX - startMouseX;
+        //         const deltaY = event.clientY - startMouseY;
+        //         dragTool.dragDir.set(deltaX, deltaY, 1).normalize(); // Normalized direction vector
 
-                dragTool.sculptStroke();
-            }
-        };
+        //         dragTool.sculptStroke();
+        //     }
+        // };
 
-        function onMouseDown(event: MouseEvent) {
-            console.log('Mousedown event triggered');
+        // function onMouseDown(event: MouseEvent) {
+        //     console.log('Mousedown event triggered');
 
-            const clickMouse = new THREE.Vector2();
-            clickMouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-            clickMouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-            sceneObjects.raycaster.setFromCamera(clickMouse, sceneObjects.camera);
-            const found = sceneObjects.raycaster.intersectObjects(sceneObjects.scene.children);
+        //     const clickMouse = new THREE.Vector2();
+        //     clickMouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+        //     clickMouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+        //     sceneObjects.raycaster.setFromCamera(clickMouse, sceneObjects.camera);
+        //     const found = sceneObjects.raycaster.intersectObjects(sceneObjects.scene.children);
 
-            if (found.length > 0) {
-                isDragging = true;
-                startMouseX = event.clientX;
-                startMouseY = event.clientY;
-                window.addEventListener('mousemove', onMouseMove);
-            }
-        }
+        //     if (found.length > 0) {
+        //         isDragging = true;
+        //         startMouseX = event.clientX;
+        //         startMouseY = event.clientY;
+        //         window.addEventListener('mousemove', onMouseMove);
+        //     }
+        // }
 
-        function onMouseUp() {
-            console.log('Mouseup event triggered');
-            isDragging = false;
-            window.removeEventListener('mousemove', onMouseMove);
-        }
+        // function onMouseUp() {
+        //     console.log('Mouseup event triggered');
+        //     isDragging = false;
+        //     window.removeEventListener('mousemove', onMouseMove);
+        // }
 
         // Add event listeners for mouse down and up events
-        window.addEventListener('mousedown', onMouseDown);
-        window.addEventListener('mouseup', onMouseUp);
+        // window.addEventListener('mousedown', onMouseDown);
+        // window.addEventListener('mouseup', onMouseUp);
 
 
         // const handleDrag = drag(sceneObjects.raycaster, sceneObjects.scene, sceneObjects.camera);

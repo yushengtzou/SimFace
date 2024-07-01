@@ -1,12 +1,14 @@
 import * as THREE from 'three';
 const clickMouse = new THREE.Vector2(); // create once
 const vector3 = new THREE.Vector3(); // create once
-let MAX_CLICK_DISTANCE = 0.1; // 最大點擊距離
+let MAX_CLICK_DISTANCE = 0.1; // 固定的影响范围半径
+let deformDistance = 0.1; // 滑动条控制的变形距离
 let initialClickPoint = null;
 let initialGeometry = null;
 let targetMesh = null;
+let deformationNormal = null; // Store the normal at the deformation point
 // Function to deform the mesh based on the current slider value
-function deformMesh(point, mesh, distance) {
+function deformMesh(point, mesh, normal, deformDist) {
     const geometry = mesh.geometry;
     const position = geometry.attributes.position;
     const initialPosition = initialGeometry.attributes.position;
@@ -21,9 +23,12 @@ function deformMesh(point, mesh, distance) {
         // Use local to world transformation only once per vertex
         vector3World.copy(vector3).applyMatrix4(mesh.matrixWorld);
         const dist = point.distanceTo(vector3World);
-        if (dist < distance) {
-            const newZ = initPosArray[iz] + (distance - dist);
-            posArray[iz] = newZ;
+        if (dist < MAX_CLICK_DISTANCE) {
+            const influence = (1 - (dist / MAX_CLICK_DISTANCE)) * deformDist;
+            // Apply deformation along the normal direction
+            posArray[ix] = initPosArray[ix] + normal.x * influence;
+            posArray[iy] = initPosArray[iy] + normal.y * influence;
+            posArray[iz] = initPosArray[iz] + normal.z * influence;
         }
     }
     geometry.computeVertexNormals();
@@ -32,6 +37,7 @@ function deformMesh(point, mesh, distance) {
 // 鼠標點擊於模型上，頂點 Z 座標位置改變
 export function elevate(raycaster, scene, camera) {
     return function (event) {
+        var _a;
         // THREE 射線檢測器
         clickMouse.x = (event.clientX / window.innerWidth) * 2 - 1;
         clickMouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
@@ -46,19 +52,24 @@ export function elevate(raycaster, scene, camera) {
             targetMesh = found[0].object;
             initialGeometry = targetMesh.geometry.clone();
             initialClickPoint = found[0].point.clone();
-            deformMesh(initialClickPoint, targetMesh, MAX_CLICK_DISTANCE);
+            deformationNormal = ((_a = found[0].face) === null || _a === void 0 ? void 0 : _a.normal) ? found[0].face.normal.clone() : null;
+            if (deformationNormal) {
+                // Transform the normal to world space
+                deformationNormal.applyMatrix3(new THREE.Matrix3().getNormalMatrix(targetMesh.matrixWorld));
+                deformMesh(initialClickPoint, targetMesh, deformationNormal, deformDistance);
+            }
         }
     };
 }
-// Add an event listener to the slider to update MAX_CLICK_DISTANCE and deform the mesh
+// Add an event listener to the slider to update deformDistance and deform the mesh
 const slider = document.getElementById('distance-slider');
 if (slider) {
     slider.addEventListener('input', (event) => {
         const value = event.target.value;
-        MAX_CLICK_DISTANCE = parseFloat(value) / 100; // Scale the slider value appropriately
-        if (initialClickPoint && targetMesh) {
+        deformDistance = parseFloat(value) / 100; // Scale the slider value appropriately
+        if (initialClickPoint && targetMesh && deformationNormal) {
             targetMesh.geometry.copy(initialGeometry); // Reset to initial geometry
-            deformMesh(initialClickPoint, targetMesh, MAX_CLICK_DISTANCE);
+            deformMesh(initialClickPoint, targetMesh, deformationNormal, deformDistance);
         }
     });
 }
@@ -69,25 +80,36 @@ if (slider) {
 // let initialClickPoint: THREE.Vector3 | null = null;
 // let initialGeometry: THREE.BufferGeometry | null = null;
 // let targetMesh: THREE.Mesh | null = null;
+// let deformationNormal: THREE.Vector3 | null = null; // Store the normal at the deformation point
 // // Function to deform the mesh based on the current slider value
-// function deformMesh(point: THREE.Vector3, mesh: THREE.Mesh, distance: number) {
+// function deformMesh(point: THREE.Vector3, mesh: THREE.Mesh, distance: number, normal: THREE.Vector3) {
 //     const geometry = mesh.geometry as THREE.BufferGeometry;
 //     const position = geometry.attributes.position;
 //     const initialPosition = (initialGeometry as THREE.BufferGeometry).attributes.position;
+//     const posArray = position.array;
+//     const initPosArray = initialPosition.array;
+//     const vector3World = new THREE.Vector3();
 //     for (let i = 0; i < position.count; i++) {
+//         const ix = i * 3;
+//         const iy = ix + 1;
+//         const iz = ix + 2;
 //         vector3.set(
-//             initialPosition.getX(i),
-//             initialPosition.getY(i),
-//             initialPosition.getZ(i)
+//             initPosArray[ix],
+//             initPosArray[iy],
+//             initPosArray[iz]
 //         );
-//         const toWorld = mesh.localToWorld(vector3.clone());
-//         const dist = point.distanceTo(toWorld);
+//         // Use local to world transformation only once per vertex
+//         vector3World.copy(vector3).applyMatrix4(mesh.matrixWorld);
+//         const dist = point.distanceTo(vector3World);
 //         if (dist < distance) {
-//             position.setZ(i, initialPosition.getZ(i) + (distance - dist));
+//             // Apply deformation along the normal direction
+//             posArray[ix] += normal.x * (distance - dist);
+//             posArray[iy] += normal.y * (distance - dist);
+//             posArray[iz] += normal.z * (distance - dist);
 //         }
 //     }
 //     geometry.computeVertexNormals();
-//     geometry.attributes.position.needsUpdate = true;
+//     position.needsUpdate = true;
 // }
 // // 鼠標點擊於模型上，頂點 Z 座標位置改變
 // export function elevate(raycaster: THREE.Raycaster, scene: THREE.Scene, camera: THREE.PerspectiveCamera) {
@@ -106,7 +128,12 @@ if (slider) {
 //             targetMesh = found[0].object as THREE.Mesh;
 //             initialGeometry = (targetMesh.geometry as THREE.BufferGeometry).clone();
 //             initialClickPoint = found[0].point.clone();
-//             deformMesh(initialClickPoint, targetMesh, MAX_CLICK_DISTANCE);
+//             deformationNormal = found[0].face?.normal ? found[0].face.normal.clone() : null;
+//             if (deformationNormal) {
+//                 // Transform the normal to world space
+//                 deformationNormal.applyMatrix3(new THREE.Matrix3().getNormalMatrix(targetMesh.matrixWorld));
+//                 deformMesh(initialClickPoint, targetMesh, MAX_CLICK_DISTANCE, deformationNormal);
+//             }
 //         }
 //     };
 // }
@@ -116,9 +143,9 @@ if (slider) {
 //     slider.addEventListener('input', (event) => {
 //         const value = (event.target as HTMLInputElement).value;
 //         MAX_CLICK_DISTANCE = parseFloat(value) / 100; // Scale the slider value appropriately
-//         if (initialClickPoint && targetMesh) {
+//         if (initialClickPoint && targetMesh && deformationNormal) {
 //             targetMesh.geometry.copy(initialGeometry as THREE.BufferGeometry); // Reset to initial geometry
-//             deformMesh(initialClickPoint, targetMesh, MAX_CLICK_DISTANCE);
+//             deformMesh(initialClickPoint, targetMesh, MAX_CLICK_DISTANCE, deformationNormal);
 //         }
 //     });
 // }
