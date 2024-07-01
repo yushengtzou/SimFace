@@ -52,7 +52,7 @@ function main() {
         });
 
         // 視窗事件監聽，鼠標點擊於模型上，頂點Z座標位置改變
-        // window.addEventListener('click', (event) => elevate(sceneObjects.raycaster, sceneObjects.scene, sceneObjects.camera)(event));
+        window.addEventListener('click', (event) => elevate(sceneObjects.raycaster, sceneObjects.scene, sceneObjects.camera)(event));
 
         // 鼠標移動時，呼叫 elevate 函數，使周圍頂點的 X, Y, Z 座標位置改變
         // const onMouseMove = elevate(sceneObjects.raycaster, sceneObjects.scene, sceneObjects.camera);

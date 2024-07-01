@@ -1,5 +1,5 @@
-import Enums from './misc/Enums';
-import Utils from './misc/Utils';
+import Enums from '../../misc/Enums';
+import Utils from '../../misc/Utils';
 // 概述雕刻操作流程：
 // start（檢查是否點擊到網格，開始狀態堆疊） -> startSculpt
 // startSculpt（初始化工具特定的內容） -> sculptStroke

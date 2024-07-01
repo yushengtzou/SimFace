@@ -4,7 +4,7 @@ class Drag {
     constructor(sceneObjects) {
         this.sceneObjects = sceneObjects;
         this._main = { _mouseX: 0, _mouseY: 0 };
-        this.dragDir = new THREE.Vector3(0, 0, 0.1); // Initial direction
+        this.dragDir = new THREE.Vector3(0, 0, 1); // Initial direction
     }
     sculptStroke() {
         const { raycaster, scene, camera } = this.sceneObjects;

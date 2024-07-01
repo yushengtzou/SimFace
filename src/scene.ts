@@ -134,10 +134,10 @@ export function constructScene(
             sceneObjects.camera.updateProjectionMatrix();
         }
 
-        if (needsCheck && lastMouseEvent) {
-            checkMouseOverModel(lastMouseEvent);
-            needsCheck = false;
-        }
+        // if (needsCheck && lastMouseEvent) {
+        //     checkMouseOverModel(lastMouseEvent);
+        //     needsCheck = false;
+        // }
 
         sceneObjects.renderer.render(sceneObjects.scene, sceneObjects.camera);
         requestAnimationFrame(render);
