@@ -1,22 +1,29 @@
 // 引入相關套件與副程式
 import * as THREE from 'three';
 import { constructScene } from './scene';
-import { createCurve, onMouseClick, findClosestVertices, findClosestFaces } from './tools/surface';
 import { elevate } from './tools/deformation/deform';
-// import Drag from './tools/deformation/Drag'; 
+import { createCurve, onMouseClick, findClosestVertices, findClosestFaces } from './tools/surface';
 import Drag from './tools/deformation/SimpleDrag';
+
+let sceneObjects: {
+    camera: THREE.PerspectiveCamera;
+    scene: THREE.Scene;
+    renderer: THREE.WebGLRenderer;
+    raycaster: THREE.Raycaster;
+    faceMesh: THREE.Object3D;
+};
 
 // 主程式
 function main() {
     let markedPoints: THREE.Vector3[] = [];
     
     // 宣告場景物件
-    let sceneObjects = {
+    sceneObjects = {
         camera: null as unknown as THREE.PerspectiveCamera,
         scene: null as unknown as THREE.Scene,
         renderer: null as unknown as THREE.WebGLRenderer,
         raycaster: new THREE.Raycaster(),
-        faceMesh: new THREE.Object3D,
+        faceMesh: new THREE.Object3D(),
     };
 
     // 宣告場景變數
@@ -54,129 +61,35 @@ function main() {
         // 視窗事件監聽，鼠標點擊於模型上，頂點Z座標位置改變
         window.addEventListener('click', (event) => elevate(sceneObjects.raycaster, sceneObjects.scene, sceneObjects.camera)(event));
 
-        // 鼠標移動時，呼叫 elevate 函數，使周圍頂點的 X, Y, Z 座標位置改變
-        // const onMouseMove = elevate(sceneObjects.raycaster, sceneObjects.scene, sceneObjects.camera);
-
-
-        // const dragTool = new Drag(sceneObjects);
-        // let isDragging = false;
-        // let startMouseX = 0;
-        // let startMouseY = 0;
-
-        // Handle mouse move events to deform the mesh vertices
-        // const onMouseMove = (event: MouseEvent) => {
-        //     if (isDragging) {
-        //         dragTool._main._mouseX = event.clientX;
-        //         dragTool._main._mouseY = event.clientY;
-
-        //         // Update drag direction based on mouse movement
-        //         const deltaX = event.clientX - startMouseX;
-        //         const deltaY = event.clientY - startMouseY;
-        //         dragTool.dragDir.set(deltaX, deltaY, 1).normalize(); // Normalized direction vector
-
-        //         dragTool.sculptStroke();
-        //     }
-        // };
-
-        // function onMouseDown(event: MouseEvent) {
-        //     console.log('Mousedown event triggered');
-
-        //     const clickMouse = new THREE.Vector2();
-        //     clickMouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-        //     clickMouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-        //     sceneObjects.raycaster.setFromCamera(clickMouse, sceneObjects.camera);
-        //     const found = sceneObjects.raycaster.intersectObjects(sceneObjects.scene.children);
-
-        //     if (found.length > 0) {
-        //         isDragging = true;
-        //         startMouseX = event.clientX;
-        //         startMouseY = event.clientY;
-        //         window.addEventListener('mousemove', onMouseMove);
-        //     }
-        // }
-
-        // function onMouseUp() {
-        //     console.log('Mouseup event triggered');
-        //     isDragging = false;
-        //     window.removeEventListener('mousemove', onMouseMove);
-        // }
-
-        // Add event listeners for mouse down and up events
-        // window.addEventListener('mousedown', onMouseDown);
-        // window.addEventListener('mouseup', onMouseUp);
-
-
-        // const handleDrag = drag(sceneObjects.raycaster, sceneObjects.scene, sceneObjects.camera);
-        // window.addEventListener('mousedown', handleDrag);
-
-        // 實例化 Drag 類別
-        // const dragTool = new Drag({
-        //     ...sceneObjects,
-        //     getPicking: () => ({ /* Your picking logic */ })
-        // });
-        
-        // let isDragging = false;
-        
-        // 鼠標移動時，呼叫 Drag 類別的 sculptStroke 函數，使周圍頂點的 X, Y, Z 座標位置改變
-        // const onMouseMove = (event: MouseEvent) => {
-        //     if (isDragging) {
-        //         dragTool._main._mouseX = event.clientX;
-        //         dragTool._main._mouseY = event.clientY;
-        //         dragTool.sculptStroke();
-        //     }
-        // };
-
-        // function onMouseDown(event: MouseEvent) {
-        //     console.log('Mousedown event triggered');
-        
-        //     const clickMouse = new THREE.Vector2();
-        //     clickMouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-        //     clickMouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-        //     sceneObjects.raycaster.setFromCamera(clickMouse, sceneObjects.camera);
-        //     const found = sceneObjects.raycaster.intersectObjects(sceneObjects.scene.children);
-        
-        //     if (found.length > 0) {
-        //         // 如果射線檢測到 3D 模型，則開始拖曳
-        //         isDragging = true;
-        //         window.addEventListener('mousemove', onMouseMove);
-        //     }
-        // }
-
-        // function onMouseUp() {
-        //     console.log('Mouseup event triggered');
-        //     window.removeEventListener('mousemove', onMouseMove);
-        // }
-
-        // 視窗事件監聽，鼠標按下
-        // window.addEventListener('mousedown', onMouseDown);
-
-        // 視窗事件監聽，鼠標鬆開
-        // window.addEventListener('mouseup', onMouseUp);        
-
+        // Automatically capture and send the image at regular intervals
+        // setInterval(() => {
+        //     const imageData = captureImage(sceneObjects.renderer, sceneObjects.scene, sceneObjects.camera);
+        //     sendImageToServer(imageData);
+        // }, 5000); // Capture and send the image every 5 seconds
 
         // 視窗事件監聽，曲線擬合按鈕點擊
         // fit_curve.addEventListener('click', () => {
         //     console.log("視窗事件監聽，曲線擬合按鈕點擊");
         //     if (markedPoints.length > 5) {
         //         fittedCurvePoints = createCurve(markedPoints, sceneObjects.scene, new THREE.Color(0xFF0000));
-                //0x3399FF 0xFF0000
-                // console.log(fittedCurvePoints.length);
-                // console.log(sceneObjects.faceMesh.children.length);
-                // console.log(sceneObjects.faceMesh.children);
+        //         //0x3399FF 0xFF0000
+        //         console.log(fittedCurvePoints.length);
+        //         console.log(sceneObjects.faceMesh.children.length);
+        //         console.log(sceneObjects.faceMesh.children);
 
-                // 找出曲線每個點最靠近的模型 face 
-                // if (sceneObjects.faceMesh && sceneObjects.faceMesh.children.length > 0) {
-                //     console.log("找出曲線每個點最靠近的模型 face");
-                //     const mesh = sceneObjects.faceMesh.children[0] as THREE.Mesh;
-                //     let geometry = mesh.geometry as THREE.BufferGeometry;
-                //     console.log(geometry);
+        //         // 找出曲線每個點最靠近的模型 face 
+        //         if (sceneObjects.faceMesh && sceneObjects.faceMesh.children.length > 0) {
+        //             console.log("找出曲線每個點最靠近的模型 face");
+        //             const mesh = sceneObjects.faceMesh.children[0] as THREE.Mesh;
+        //             let geometry = mesh.geometry as THREE.BufferGeometry;
+        //             console.log(geometry);
 
-                //     closestFaces = findClosestFaces(fittedCurvePoints, geometry);
-                //     console.log('Closest faces:', closestFaces);
+        //             closestFaces = findClosestFaces(fittedCurvePoints, geometry);
+        //             console.log('Closest faces:', closestFaces);
 
-                //     closestVertices = findClosestVertices(fittedCurvePoints, geometry);
+        //             closestVertices = findClosestVertices(fittedCurvePoints, geometry);
 
-                    // Do something with the closest vertices, like drawing the new curve
+        //             // Do something with the closest vertices, like drawing the new curve
         //             console.log('Closest vertices:', closestVertices);
         //             createCurve(closestVertices, sceneObjects.scene, new THREE.Color(0xFF0000));
         //         }
@@ -188,9 +101,8 @@ function main() {
 
     // 呼叫建立場景的副程式
     constructScene(sceneParams, sceneObjects, onModelLoaded);
+    
 }
 
 main();
-
-
 

@@ -12,8 +12,7 @@ import { MTLLoader } from 'three/examples/jsm/loaders/MTLLoader.js';
 export function constructScene(
     sceneParams: { canvasId: string, cameraPosition: THREE.Vector3, backgroundColor: string, modelPaths: { mtl: string; obj: string } },
     sceneObjects: { camera: THREE.PerspectiveCamera, scene: THREE.Scene, renderer: THREE.WebGLRenderer, raycaster: THREE.Raycaster, faceMesh: THREE.Object3D },
-    onLoadCallback: () => void
-) {
+    onLoadCallback: () => void ) {
 
     // 取得畫布元素
     const canvas = document.querySelector(`#${sceneParams.canvasId}`) as HTMLCanvasElement;
@@ -62,7 +61,6 @@ export function constructScene(
             }
         )}
     );
-
 
     // 調整渲染器大小
     function resizeRendererToDisplaySize(renderer: THREE.WebGLRenderer) {
@@ -117,16 +115,6 @@ export function constructScene(
     window.addEventListener('mousemove', onMouseMove);
 
     // 渲染函數
-    // function render() {
-    //     if (resizeRendererToDisplaySize(sceneObjects.renderer)) {
-    //         const canvas = sceneObjects.renderer.domElement;
-    //         sceneObjects.camera.aspect = canvas.clientWidth / canvas.clientHeight;
-    //         sceneObjects.camera.updateProjectionMatrix();
-    //     }
-    //     sceneObjects.renderer.render(sceneObjects.scene, sceneObjects.camera);
-    //     requestAnimationFrame(render);
-    // }
-
     function render() {
         if (resizeRendererToDisplaySize(sceneObjects.renderer)) {
             const canvas = sceneObjects.renderer.domElement;
