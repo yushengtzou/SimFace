@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 
+// 宣告變數並定義變數型別
 const clickMouse = new THREE.Vector2(); // create once
 const vector3 = new THREE.Vector3(); // create once
 let MAX_CLICK_DISTANCE = 0.5; // 固定的影響範圍半徑
