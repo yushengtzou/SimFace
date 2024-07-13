@@ -2,7 +2,7 @@
 import * as THREE from 'three';
 import { constructScene } from './scene';
 import { elevate } from './tools/deformation/deform';
-import { navbar } from './navbar';
+//import { navbar } from './navbar';
 import { createCurve, onMouseClick, findClosestVertices, findClosestFaces } from './tools/surface';
 import Drag from './tools/deformation/SimpleDrag';
 
@@ -46,7 +46,7 @@ function main() {
     // 宣告曲線擬合按鈕
     const fit_curve = document.getElementById('fit-curve') as HTMLButtonElement;
 
-    navbar();
+//    navbar();
 
     // 載入模型後要呼叫的函式
     function onModelLoaded() {

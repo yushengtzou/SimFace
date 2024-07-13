@@ -1,6 +1,5 @@
 import type { Config } from 'tailwindcss'
 
-
 const config: Config = {
   content: [
     './index.html',  // 包含根目錄下的 index.html
@@ -23,4 +22,5 @@ const config: Config = {
     // 在這裡添加 Tailwind CSS 插件，例如表單、排版等
   ],
 }
+
 export default config satisfies Config;
