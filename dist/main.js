@@ -2,47 +2,17 @@
 import * as THREE from 'three';
 import { constructScene } from './scene';
 import { elevate } from './tools/deformation/deform';
+import { navbar } from './navbar';
+// Declare the sceneObjects variable
 let sceneObjects;
-function sendImageToServer(imageData) {
-    fetch('/detect_keypoints', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ image: imageData }),
-    })
-        .then(response => response.json())
-        .then(data => {
-        const keypoints = data.keypoints;
-        placeKeyPointsOn3DModel(keypoints);
-    })
-        .catch(error => {
-        console.error('Error:', error);
-    });
-}
-function placeKeyPointsOn3DModel(keypoints) {
-    keypoints.forEach((point) => {
-        const [x, y] = point;
-        const vertex = new THREE.Vector3(x, y, 0); // Approximation, you will need to map it back to 3D properly
-        const sphere = new THREE.Mesh(new THREE.SphereGeometry(0.1), new THREE.MeshBasicMaterial({ color: 0xff0000 }));
-        sphere.position.copy(vertex);
-        sceneObjects.scene.add(sphere);
-    });
-}
-// Function to capture image from the renderer
-function captureImage(renderer, scene, camera) {
-    renderer.render(scene, camera);
-    const canvas = renderer.domElement;
-    return canvas.toDataURL('image/png');
-}
 // 主程式
 function main() {
     let markedPoints = [];
-    // 宣告場景物件
+    // Initialize the sceneObjects
     sceneObjects = {
-        camera: null,
-        scene: null,
-        renderer: null,
+        camera: new THREE.PerspectiveCamera(),
+        scene: new THREE.Scene(),
+        renderer: new THREE.WebGLRenderer(),
         raycaster: new THREE.Raycaster(),
         faceMesh: new THREE.Object3D(),
     };
@@ -59,6 +29,7 @@ function main() {
     };
     // 宣告曲線擬合按鈕
     const fit_curve = document.getElementById('fit-curve');
+    navbar();
     // 載入模型後要呼叫的函式
     function onModelLoaded() {
         let fittedCurvePoints = [];

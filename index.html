@@ -32,6 +32,11 @@
             height: 100%;
         }
     </style>
+    <style>
+        #fileInput {
+            display: none;
+        }
+    </style>
 </head>
 <body>
     <nav class="bg-white shadow-md">
@@ -52,7 +57,8 @@
                 <div class="ml-auto hidden sm:flex sm:space-x-4">
                     <a href="#" class="rounded-md px-3 py-2 text-base font-normal text-gray-900 hover:bg-gray-200">Analysis</a>
                     <a href="#" class="rounded-md px-3 py-2 text-base font-normal text-gray-900 hover:bg-gray-200">Help</a>
-                    <a href="#" class="rounded-md px-3 py-2 text-base font-normal text-gray-900 hover:bg-gray-200">Upload</a>
+                    <a href="#" id="uploadLink" class="rounded-md px-3 py-2 text-base font-normal text-gray-900 hover:bg-gray-200">Upload</a>
+                    <input type="file" webkitdirectory mozdirectory id="fileInput" name="fileInput" accept=".obj, image/png, image/jpeg" />
                 </div>
             </div>
         </div>
@@ -94,7 +100,6 @@
             </label>
         </div>
     </div> -->
-
     <script src="index.js" type="text/babel"></script>
     <script type="module" src="./dist/main.js"></script>
 </body>

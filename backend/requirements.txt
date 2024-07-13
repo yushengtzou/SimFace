@@ -1,5 +1,0 @@
-Flask
-dlib
-opencv-python
-numpy
-

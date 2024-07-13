@@ -93,15 +93,6 @@ export function constructScene(sceneParams, sceneObjects, onLoadCallback) {
     }
     window.addEventListener('mousemove', onMouseMove);
     // 渲染函數
-    // function render() {
-    //     if (resizeRendererToDisplaySize(sceneObjects.renderer)) {
-    //         const canvas = sceneObjects.renderer.domElement;
-    //         sceneObjects.camera.aspect = canvas.clientWidth / canvas.clientHeight;
-    //         sceneObjects.camera.updateProjectionMatrix();
-    //     }
-    //     sceneObjects.renderer.render(sceneObjects.scene, sceneObjects.camera);
-    //     requestAnimationFrame(render);
-    // }
     function render() {
         if (resizeRendererToDisplaySize(sceneObjects.renderer)) {
             const canvas = sceneObjects.renderer.domElement;

@@ -2,26 +2,31 @@
 import * as THREE from 'three';
 import { constructScene } from './scene';
 import { elevate } from './tools/deformation/deform';
+import { navbar } from './navbar';
 import { createCurve, onMouseClick, findClosestVertices, findClosestFaces } from './tools/surface';
 import Drag from './tools/deformation/SimpleDrag';
 
-let sceneObjects: {
+// Define the sceneObjects type
+interface SceneObjects {
     camera: THREE.PerspectiveCamera;
     scene: THREE.Scene;
     renderer: THREE.WebGLRenderer;
     raycaster: THREE.Raycaster;
     faceMesh: THREE.Object3D;
-};
+}
+
+// Declare the sceneObjects variable
+let sceneObjects: SceneObjects;
 
 // 主程式
 function main() {
     let markedPoints: THREE.Vector3[] = [];
     
-    // 宣告場景物件
+    // Initialize the sceneObjects
     sceneObjects = {
-        camera: null as unknown as THREE.PerspectiveCamera,
-        scene: null as unknown as THREE.Scene,
-        renderer: null as unknown as THREE.WebGLRenderer,
+        camera: new THREE.PerspectiveCamera(),
+        scene: new THREE.Scene(),
+        renderer: new THREE.WebGLRenderer(),
         raycaster: new THREE.Raycaster(),
         faceMesh: new THREE.Object3D(),
     };
@@ -40,6 +45,8 @@ function main() {
 
     // 宣告曲線擬合按鈕
     const fit_curve = document.getElementById('fit-curve') as HTMLButtonElement;
+
+    navbar();
 
     // 載入模型後要呼叫的函式
     function onModelLoaded() {
