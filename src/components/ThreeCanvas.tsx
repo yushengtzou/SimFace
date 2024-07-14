@@ -3,6 +3,13 @@ import { Canvas } from '@react-three/fiber';
 import { Vector3 } from 'three';
 import Scene from './Scene';
 
+/**
+ *
+ * @description the ThreeCanvas() function aims at render the Three.js scene at the Canvas object.
+ * @return The function returns a Canvas object.
+ * @todo After clicking the "Upload" button in the navbar, the file uploaded can be set to modelPaths. 
+ *
+ */
 const ThreeCanvas = () => {
   const cameraPosition = new Vector3(0, 8, 10);
   const backgroundColor = '#f3f4f6';
