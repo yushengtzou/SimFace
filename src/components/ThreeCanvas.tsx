@@ -11,18 +11,18 @@ import Scene from './Scene';
  *
  */
 const ThreeCanvas = () => {
-  const cameraPosition = new Vector3(0, 8, 10);
-  const backgroundColor = '#f3f4f6';
-  const modelPaths = {
-    mtl: '.././model/lulu/texturedMesh.mtl',
-    obj: '.././model/lulu/texturedMesh.obj',
-  };
-
-  return (
-    <Canvas style={{ flex: 1, background: backgroundColor }}>
-      <Scene cameraPosition={cameraPosition} backgroundColor={backgroundColor} modelPaths={modelPaths} />
-    </Canvas>
-  );
+    const cameraPosition = new Vector3(-1, 6, 6);
+    const backgroundColor = '#f3f4f6';
+    const modelPaths = {
+        mtl: '.././model/lulu/texturedMesh.mtl',
+        obj: '.././model/lulu/texturedMesh.obj',
+    };
+  
+    return (
+        <Canvas style={{ flex: 1, background: backgroundColor }}>
+            <Scene cameraPosition={cameraPosition} backgroundColor={backgroundColor} modelPaths={modelPaths} />
+        </Canvas>
+    );
 };
 
 export default ThreeCanvas;

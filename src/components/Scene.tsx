@@ -1,10 +1,10 @@
-import React, { useEffect, useRef } from 'react';
-import { Canvas, useFrame, useThree, useLoader } from '@react-three/fiber';
+import React, { useEffect, useRef, Suspense } from 'react';
+import { useFrame, useThree } from '@react-three/fiber';
 import { OrbitControls } from '@react-three/drei';
 import * as THREE from 'three';
-import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader';
-import { MTLLoader } from 'three/examples/jsm/loaders/MTLLoader';
-import { Vector3 } from 'three';
+import Model from './Model';
+import { Html, useProgress } from '@react-three/drei';
+import Loader from './Loader';
 
 /**
  *
@@ -19,59 +19,55 @@ interface SceneProps {
 
 /**
  *
- * @description Model() function aims at loading the material and geometry of the 3D model.
- * @argument modelPaths, onLoad
- *
- */
-const Model = ({ modelPaths, onLoad }: { 
-        modelPaths: { mtl: string; obj: string }; 
-        onLoad: () => void 
-        }) => {
-            const mtl = useLoader(MTLLoader, modelPaths.mtl);
-            const obj = useLoader(OBJLoader, modelPaths.obj, (loader: any) => {
-              (loader as OBJLoader).setMaterials(mtl);
-            });
-          
-            useEffect(() => {
-              onLoad();
-            }, [obj, onLoad]);
-          
-            return <primitive object={obj} scale={[6, 6, 6]} position={[0, 5, 12]} />;
-        };
-
-/**
- *
- * @description Scene() function aims at constructing the scene. 
+ * @description Aims at constructing the scene.
  * @argument cameraPosition, backgroundColor, modelPaths
  *
  */
 const Scene = ({ cameraPosition, backgroundColor, modelPaths }: SceneProps) => {
     const { camera, gl } = useThree();
-    const raycaster = useRef(new THREE.Raycaster());
+    const controlsRef = useRef<any>(null);
   
     useEffect(() => {
-      (camera as THREE.PerspectiveCamera).position.copy(cameraPosition);
+        const perspectiveCamera = camera as THREE.PerspectiveCamera;
+        perspectiveCamera.position.copy(cameraPosition);
+        if (controlsRef.current) {
+          controlsRef.current.target.set(0, 5, 0);
+          controlsRef.current.update();
+        }
     }, [camera, cameraPosition]);
   
     useFrame(() => {
-      gl.setSize(window.innerWidth, window.innerHeight);
-      (camera as THREE.PerspectiveCamera).aspect = window.innerWidth / window.innerHeight;
-      (camera as THREE.PerspectiveCamera).updateProjectionMatrix();
+        gl.setSize(window.innerWidth, window.innerHeight);
+        (camera as THREE.PerspectiveCamera).aspect = window.innerWidth / window.innerHeight;
+        (camera as THREE.PerspectiveCamera).updateProjectionMatrix();
     });
   
     const handleModelLoad = () => {
-      console.log('Model loaded');
+        console.log('The information of the loaded model:');
     };
   
     return (
-      <>
-        <hemisphereLight intensity={15} color={0xB1E1FF} groundColor={0xB97A20} />
-        <directionalLight intensity={15} position={[5, 10, 2]} />
-        <ambientLight intensity={6.0} />
-        <Model modelPaths={modelPaths} onLoad={handleModelLoad} />
-        <OrbitControls />
-      </>
+        <>
+            <hemisphereLight intensity={15} color={0xB1E1FF} groundColor={0xB97A20} />
+            <directionalLight intensity={15} position={[5, 10, 2]} />
+            <ambientLight intensity={6.0} />
+            <Suspense fallback={
+                <Html center>
+                  <div style={{ color: 'black', fontSize: '24px' }}>Loading...</div>
+                </Html>
+            }>
+                <Model modelPaths={modelPaths} onLoad={handleModelLoad} />
+            </Suspense>
+  
+            <OrbitControls
+                ref={controlsRef}
+                enableZoom={true}
+                minDistance={3}
+                maxDistance={9}
+            />
+        </>
     );
 };
 
 export default Scene;
+
