@@ -4,6 +4,11 @@ import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader';
 import { MTLLoader } from 'three/examples/jsm/loaders/MTLLoader';
 import * as THREE from 'three';
 
+/**
+ *
+ * @description Use MTLLoader and OBJLoader to load the 3D model then return it through an object container.
+ *
+ */
 const Model = ({ modelPaths, onLoad }: { 
     modelPaths: { mtl: string; obj: string }; 
     onLoad: () => void }) => {
@@ -14,6 +19,7 @@ const Model = ({ modelPaths, onLoad }: {
       
         useEffect(() => {
             if (obj) {
+                // Print model info to console
                 onLoad();
                 obj.traverse((child) => {
                     if (child instanceof THREE.Mesh) {
