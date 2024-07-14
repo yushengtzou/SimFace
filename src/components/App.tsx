@@ -1,15 +1,16 @@
 import React from 'react';
 import Navbar from './Navbar';
-import Canvas from './Canvas';
+import ThreeCanvas from './ThreeCanvas';
 import Panel from './Panel';
 
 const App: React.FC = () => (
-  <>
+  <div className="h-full flex flex-col">
     <Navbar />
-    <Canvas />
+    <ThreeCanvas />
     <Panel />
-  </>
+  </div>
 );
 
 export default App;
+
 
