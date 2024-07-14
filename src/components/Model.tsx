@@ -6,7 +6,8 @@ import * as THREE from 'three';
 
 /**
  *
- * @description Use MTLLoader and OBJLoader to load the 3D model then return it through an object container.
+ * @description Use MTLLoader and OBJLoader to load the 3D model then return it through an object container "primitive".
+ * @todo Add hook to implement the onclick function through useFrame? useState?
  *
  */
 const Model = ({ modelPaths, onLoad }: { 
