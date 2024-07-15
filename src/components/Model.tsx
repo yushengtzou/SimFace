@@ -46,28 +46,41 @@ const Model: React.FC<ModelProps> = ({ modelPaths, onLoad, deformDistance }) => 
                 }
             });
         }
-    }, [obj, onLoad]);
-
+    }, [obj]);
 
     useEffect(() => {
-        console.log('useEffect triggered:', { deformDistance, initialClickPoint: initialClickPoint.current, targetMesh: targetMesh.current, deformationNormal: deformationNormal.current });
-        if (initialClickPoint.current && targetMesh.current && deformationNormal.current) {
+        console.log('useEffect of deformation triggered:', { 
+            deformDistance, 
+            initialClickPoint: initialClickPoint.current, 
+            targetMesh: targetMesh.current, 
+            deformationNormal: deformationNormal.current 
+        });
+
+        if (
+            initialClickPoint.current &&
+            targetMesh.current &&
+            deformationNormal.current
+        ) {
             console.log('Applying deformation:', deformDistance);
-            // Save the current transformation
-            const currentPosition = targetMesh.current.position.clone();
-            const currentRotation = targetMesh.current.rotation.clone();
-            const currentScale = targetMesh.current.scale.clone();
-  
-            targetMesh.current.geometry.copy(initialGeometry.current as THREE.BufferGeometry); // Reset to initial geometry
-            deformMesh(initialClickPoint.current, targetMesh.current, deformationNormal.current, deformDistance / 100); // Apply deformation
+
+            // Apply deformation
+            deformMesh(
+                initialClickPoint.current, 
+                targetMesh.current, 
+                deformationNormal.current, 
+                deformDistance / 100
+            );
+            
             targetMesh.current.geometry.attributes.position.needsUpdate = true; // Ensure geometry update
-  
-            // Restore the transformations
-            targetMesh.current.position.copy(currentPosition);
-            targetMesh.current.rotation.copy(currentRotation);
-            targetMesh.current.scale.copy(currentScale);
+        } else {
+            console.warn('Deformation skipped due to missing data:', { 
+                initialClickPoint: initialClickPoint.current, 
+                targetMesh: targetMesh.current, 
+                deformationNormal: deformationNormal.current 
+            });
         }
     }, [deformDistance]);
+
   
     return (
       <>
