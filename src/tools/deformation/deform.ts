@@ -11,7 +11,7 @@ let targetMesh: THREE.Mesh | null = null;
 let deformationNormal: THREE.Vector3 | null = null; // 儲存鼠標點擊位置的法向量
 
 // 依據滑桿值來形變網目的函式
-function deformMesh(point: THREE.Vector3, mesh: THREE.Mesh, normal: THREE.Vector3, deformDist: number) {
+export function deformMesh(point: THREE.Vector3, mesh: THREE.Mesh, normal: THREE.Vector3, deformDist: number) {
     const geometry = mesh.geometry as THREE.BufferGeometry;
     const position = geometry.attributes.position;
     const initialPosition = (initialGeometry as THREE.BufferGeometry).attributes.position;
