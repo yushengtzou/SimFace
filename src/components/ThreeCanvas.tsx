@@ -4,7 +4,7 @@ import { Vector3 } from 'three';
 import Scene from './Scene';
 
 interface ThreeCanvasProps {
-  deformDistance: number;
+    deformDistance: number;
 }
 
 /**
