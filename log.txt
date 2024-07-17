@@ -1,0 +1,117 @@
+IS:1
+
+    _
+    useEffect((event: React.PointerEvent) => {
+
+        console.log('Model clicked');
+
+        clickToDeformModel(event.nativeEvent);
+
+    }, []);
+
+    Argument of type '(event: React.PointerEvent) => void' is not assignable to parameter of type 'EffectCallback'.
+
+    Target signature provides too few arguments. Expected 1 or more, but got 0.
+
+    (tsserver 2345)
+
+    @1.Description 
+
+    @2.Analysis
+
+    @3.Background Knowledge
+
+    @4.Solution
+    _
+
+
+IS:2
+
+    _
+        /**
+         *
+         * 模型點擊事件的處理函式
+         * 當模型被點擊時觸發形變操作
+         *
+         */
+        const onPointerDown = (event: React.PointerEvent) => {
+            event.stopPropagation();
+            console.log('Model clicked');
+    //        clickToDeformModel(event.nativeEvent);
+        };
+
+        return (
+          <>
+            <primitive
+                ref={meshRef}
+    //            onPointerDown={onPointerDown}
+                object={obj}
+                scale={[6, 6, 6]}
+                position={[0, 5, 12]}
+            />
+          </>
+        );
+
+    @1.Description return(<primitive onPointerDown) 中的 onPointerDown 會造成場景放大和縮小的延遲，就算換成 onclick 還是一樣  
+
+    @2.Analysis
+        1.初步
+            這個問題要從元件的生命週期的角度來分析，首先要理解，primitive 元件回傳到 Canvas 元件的過程，依序發生了哪些事。
+            // source: 
+
+            1. 初始化 (Mounting)
+                a. 組件初次渲染
+                    - Component Initialization：當 Model 組件第一次渲染時，React 會調用組件的構造函數
+                    （對於函數組件來說，是調用函數本身）來初始化組件的狀態和副作用。
+                    - useLoader 加載模型：useLoader 被調用以加載材質和幾何數據。mtl 和 obj 分別通過 MTLLoader 和 OBJLoader
+                     被加載，這些加載過程是異步的。
+                b. 設置 ref 和初始渲染
+                    - Ref Initialization：meshRef 會被初始化為 null，隨後在 primitive 組件渲染到 DOM 中時賦值為對應的 Three.js Mesh 對象。
+                    - Initial Render：<primitive> 元素會被渲染到虛擬 DOM 中，React 會開始進行對應的 DOM 操作，將其轉換為真實的 DOM
+                    元素並渲染到畫布上。
+
+            2. 更新 (Updating)
+                a. 副作用處理
+                    - useEffect：當 obj 被成功加載後，useEffect 會被觸發。在這個過程中，模型的幾何和材質數據會被打印到控制台。
+                    - Raycaster：在這個階段，raycaster 會被初始化並且準備好進行光線投射操作。
+                b. 事件處理器設置
+                    - Event Handler Attachment：當 primitive 組件被渲染並且 meshRef 被賦值時，onPointerDown 事件處理器會被附加到該
+                     Mesh 對象。每當用戶在模型上觸發 pointerdown 事件時，onPointerDown 會被調用。
+
+            3. 卸載 (Unmounting)
+                a. 清理工作
+                    Component Unmounting：當 Model 組件從 DOM 中移除時，React 會調用清理函數。這是 React 保證沒有內存泄漏或無效引用的機制。
+
+        2. 不加 primitive 會報錯
+            chunk-2T23EU2R.js?v=a0783620:4938 Uncaught Error: Objects are not valid as a React child (found: object with keys {current}). If you meant to render a collection of children, use an array instead.
+                at throwOnInvalidObjectType (chunk-2T23EU2R.js?v=a0783620:4938:17)
+                at createChild (chunk-2T23EU2R.js?v=a0783620:5116:15)
+                at reconcileChildrenArray (chunk-2T23EU2R.js?v=a0783620:5292:33)
+                at reconcileChildFibers2 (chunk-2T23EU2R.js?v=a0783620:5570:24)
+                at reconcileChildren (chunk-2T23EU2R.js?v=a0783620:8737:37)
+                at mountIndeterminateComponent (chunk-2T23EU2R.js?v=a0783620:9439:13)
+                at beginWork (chunk-2T23EU2R.js?v=a0783620:10362:22)
+                at HTMLUnknownElement.callCallback2 (chunk-2T23EU2R.js?v=a0783620:10593:22)
+                at Object.invokeGuardedCallbackDev (chunk-2T23EU2R.js?v=a0783620:10618:24)
+                at invokeGuardedCallback (chunk-2T23EU2R.js?v=a0783620:10650:39)
+
+        3. 那為什麼要加 primitive? 
+
+    @3.Background Knowledge
+        a. "<primitive/>" Component
+            (property) ThreeElements.primitive: PrimitiveProps
+            primitive: PrimitiveProps;
+
+        b. The <primitive /> component is a versatile low-level component in TresJS that allows you to directly use any three.js 
+        object within your Vue application without an abstraction. It acts as a bridge between Vue's reactivity system and 
+        THREE's scene graph.
+        
+        source: https://docs.tresjs.org/advanced/primitive
+
+    @4.Solution
+    _
+
+
+
+
+

@@ -3,7 +3,7 @@ import { useLoader, useThree } from '@react-three/fiber';
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader';
 import { MTLLoader } from 'three/examples/jsm/loaders/MTLLoader';
 import * as THREE from 'three';
-import { elevate, deformMesh } from '../tools/deformation/deform';
+import { elevate } from '../tools/deformation/deform';
 
 /**
  * 型別介面宣告
@@ -60,6 +60,8 @@ const Model: React.FC<ModelProps> = ({ modelPaths, onLoad, deformDistance }) => 
     const targetMesh = useRef<THREE.Mesh | null>(null);
     // 用於存儲形變法向量的引用
     const deformationNormal = useRef<THREE.Vector3 | null>(null);
+    // 用於存儲模型的引用
+    const meshRef = useRef<THREE.Mesh | null>(null);
 
     // 使用 MTLLoader 載入模型的材質文件
     const mtl = useLoader(MTLLoader, modelPaths.mtl);
@@ -80,6 +82,11 @@ const Model: React.FC<ModelProps> = ({ modelPaths, onLoad, deformDistance }) => 
      *
      */
 
+    /**
+     *
+     * 載入模型時印出模型的幾何和材質物件的資訊
+     *
+     */
     useEffect(() => {
         if (obj) {
             onLoad(); // Print model info to console
@@ -91,48 +98,28 @@ const Model: React.FC<ModelProps> = ({ modelPaths, onLoad, deformDistance }) => 
                 }
             });
         }
-    }, [obj]);
+    }, [obj, onLoad]);
 
-    useEffect(() => {
-        console.log('useEffect of deformation triggered:', { 
-            deformDistance, 
-            initialClickPoint: initialClickPoint.current, 
-            targetMesh: targetMesh.current, 
-            deformationNormal: deformationNormal.current 
-        });
+    /**
+     *
+     * 模型點擊事件的處理函式
+     * 當模型被點擊時觸發形變操作
+     *
+     */
+    const onPointerDown = (event: React.PointerEvent) => {
+        event.stopPropagation();
+//        console.log('Model clicked');
+//        clickToDeformModel(event.nativeEvent);
+    };
 
-        if (
-            initialClickPoint.current &&
-            targetMesh.current &&
-            deformationNormal.current
-        ) {
-            console.log('Applying deformation:', deformDistance);
-
-            // Apply deformation
-            deformMesh(
-                initialClickPoint.current, 
-                targetMesh.current, 
-                deformationNormal.current, 
-                deformDistance / 100
-            );
-            
-            targetMesh.current.geometry.attributes.position.needsUpdate = true; // Ensure geometry update
-        } else {
-            console.warn('Deformation skipped due to missing data:', { 
-                initialClickPoint: initialClickPoint.current, 
-                targetMesh: targetMesh.current, 
-                deformationNormal: deformationNormal.current 
-            });
-        }
-    }, [deformDistance]);
-
-  
     return (
       <>
         <primitive
-            object = {obj}
-            scale = {[6, 6, 6]}
-            position = {[0, 5, 12]}
+            ref={meshRef}
+            onPointerDown={onPointerDown}
+            object={obj}
+            scale={[6, 6, 6]}
+            position={[0, 5, 12]}
         />
       </>
     );
@@ -141,26 +128,3 @@ const Model: React.FC<ModelProps> = ({ modelPaths, onLoad, deformDistance }) => 
 export default Model;
 
 
-//            onPointerDown = {(event: React.PointerEvent) => {
-//                    console.log('Model clicked');
-//                    clickToDeformModel(event.nativeEvent);
-//                }
-//            }
-//            onPointerDownCapture = {(event: React.PointerEvent) => {
-//                    if (raycaster.current) {
-//                        const intersects = raycaster.current.intersectObject(obj, true);
-//                        if (intersects.length > 0) {
-//                            const intersect = intersects[0];
-//                            targetMesh.current = intersect.object as THREE.Mesh;
-//                            initialGeometry.current = targetMesh.current.geometry.clone();
-//                            initialClickPoint.current = intersect.point.clone();
-//                            deformationNormal.current = intersect.face?.normal.clone() || null;
-//                            if (deformationNormal.current) {
-//                                deformationNormal.current.applyMatrix3(
-//                                    new THREE.Matrix3().getNormalMatrix(targetMesh.current.matrixWorld)
-//                                );
-//                            }
-//                        }
-//                    }
-//                }
-//            }

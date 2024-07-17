@@ -1,17 +1,34 @@
 import * as THREE from 'three';
 
-// 宣告變數並定義變數型別
-const clickMouse = new THREE.Vector2(); // create once
-const vector3 = new THREE.Vector3(); // create once
-let MAX_CLICK_DISTANCE = 0.5; // 固定的影響範圍半徑
-let deformDistance = 0.1; // 滑動條控制的變形距離
+/**
+ *
+ * 宣告並初始化相關變數
+ *
+ */
+
+// create once
+const clickMouse = new THREE.Vector2(); 
+// create once
+const vector3 = new THREE.Vector3(); 
+
+// 固定的影響範圍半徑
+let MAX_CLICK_DISTANCE = 0.5; 
+// 滑動條控制的變形距離
+let deformDistance = 0.1; 
+
 let initialClickPoint: THREE.Vector3 | null = null;
 let initialGeometry: THREE.BufferGeometry | null = null;
 let targetMesh: THREE.Mesh | null = null;
-let deformationNormal: THREE.Vector3 | null = null; // 儲存鼠標點擊位置的法向量
+// 儲存鼠標點擊位置的法向量
+let deformationNormal: THREE.Vector3 | null = null; 
 
-// 依據滑桿值來形變網目的函式
-export function deformMesh(point: THREE.Vector3, mesh: THREE.Mesh, normal: THREE.Vector3, deformDist: number) {
+/**
+ *
+ * @description 依據滑桿值來形變網目的函式
+ *
+ *
+ */
+function deformMesh(point: THREE.Vector3, mesh: THREE.Mesh, normal: THREE.Vector3, deformDist: number) {
     const geometry = mesh.geometry as THREE.BufferGeometry;
     const position = geometry.attributes.position;
     const initialPosition = (initialGeometry as THREE.BufferGeometry).attributes.position;
@@ -48,7 +65,12 @@ export function deformMesh(point: THREE.Vector3, mesh: THREE.Mesh, normal: THREE
     position.needsUpdate = true;
 }
 
-// 形變網目計算的函式
+/**
+ *
+ * @description 形變網目計算的函式
+ *
+ *
+ */
 export function elevate(raycaster: THREE.Raycaster, scene: THREE.Scene, camera: THREE.PerspectiveCamera) {
     return function (event: MouseEvent) {
         // THREE 射線投射器

@@ -44,7 +44,7 @@ const Scene: React.FC<SceneProps> = ({ cameraPosition, backgroundColor, modelPat
     });
   
     const handleModelLoad = () => {
-        console.log('The information of the loaded model:'); // Callback for model load
+        console.log('載入模型後，列印模型資訊：'); // Callback for model load
     };
   
     return (
