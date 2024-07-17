@@ -61,7 +61,7 @@ const Scene: React.FC<SceneProps> = ({ cameraPosition, backgroundColor, modelPat
           >
               <Model modelPaths={modelPaths} onLoad={handleModelLoad} deformDistance={deformDistance} />
           </Suspense>
-          <OrbitControls enableDamping={false} ref={controlsRef} enableZoom={true} minDistance={3} maxDistance={9} zoomSpeed={0.9} />
+          <OrbitControls enableDamping={false} ref={controlsRef} enableZoom={true} minDistance={3} maxDistance={9} zoomSpeed={0.8} />
         
       </>
     );

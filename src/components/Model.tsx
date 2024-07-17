@@ -5,9 +5,30 @@ import { MTLLoader } from 'three/examples/jsm/loaders/MTLLoader';
 import * as THREE from 'three';
 import { elevate, deformMesh } from '../tools/deformation/deform';
 
+/**
+ * 型別介面宣告
+ * 定義 ModelProps 介面，用於描述模型組件的屬性
+ */
 interface ModelProps {
-    modelPaths: { mtl: string; obj: string };
+    /**
+     * 模型文件路徑
+     * 包含材質文件 (mtl) 和幾何文件 (obj) 的路徑
+     */
+    modelPaths: { 
+        mtl: string; 
+        obj: string; 
+    };
+
+    /**
+     * 加載完成的回調函數
+     * 當模型加載完成後會被調用
+     */
     onLoad: () => void;
+
+    /**
+     * 形變距離
+     * 用於定義模型形變的距離參數
+     */
     deformDistance: number;
 }
 
@@ -19,31 +40,46 @@ interface ModelProps {
  *
  */
 const Model: React.FC<ModelProps> = ({ modelPaths, onLoad, deformDistance }) => {
-    // 引入 THREE 的場景和相機
+
+    /**
+     *
+     * 宣告並初始化相關變數
+     *
+     */
+
+    // 引入 THREE.js 庫中的場景 (scene) 和預設相機 (defaultCamera)
     const { scene, camera: defaultCamera } = useThree();
-    // 射線投射器
-    const raycaster = useRef(new THREE.Raycaster()); 
-    // 初始點擊位置
-    const initialClickPoint = useRef<THREE.Vector3 | null>(null); 
-    // 初始幾何
+    // 創建射線投射器 (Raycaster) 的引用，用於光線投射操作
+    const raycaster = useRef(new THREE.Raycaster());
+
+    // 用於存儲初始點擊位置的引用
+    const initialClickPoint = useRef<THREE.Vector3 | null>(null);
+    // 用於存儲初始幾何的引用
     const initialGeometry = useRef<THREE.BufferGeometry | null>(null);
-    // 目標模型
-    const targetMesh = useRef<THREE.Mesh | null>(null); 
-    // 形變的法向量
-    const deformationNormal = useRef<THREE.Vector3 | null>(null); 
-  
-    // 載入模型的材質
+    // 用於存儲目標模型的引用
+    const targetMesh = useRef<THREE.Mesh | null>(null);
+    // 用於存儲形變法向量的引用
+    const deformationNormal = useRef<THREE.Vector3 | null>(null);
+
+    // 使用 MTLLoader 載入模型的材質文件
     const mtl = useLoader(MTLLoader, modelPaths.mtl);
-    // 載入模型的幾何
-    const obj = useLoader(OBJLoader, modelPaths.obj, (loader: any) => {
-        (loader as OBJLoader).setMaterials(mtl);
+    // 使用 OBJLoader 載入模型的幾何，並設置材質
+    const obj = useLoader(OBJLoader, modelPaths.obj, (loader: OBJLoader) => {
+        loader.setMaterials(mtl);
     });
-  
-    // 設定相機為透視相機
+
+    // 將默認相機設定為透視相機
     const camera = defaultCamera as THREE.PerspectiveCamera;
-  
+
     const clickToDeformModel = elevate(raycaster.current, scene, camera);
-  
+
+    /**
+     *
+     * Model 元件的 Hook 函式
+     * 該函式負責初始化並管理 Model 元件在應用程式中的狀態和生命周期。
+     *
+     */
+
     useEffect(() => {
         if (obj) {
             onLoad(); // Print model info to console
@@ -97,29 +133,6 @@ const Model: React.FC<ModelProps> = ({ modelPaths, onLoad, deformDistance }) => 
             object = {obj}
             scale = {[6, 6, 6]}
             position = {[0, 5, 12]}
-            onPointerDown = {(event: React.PointerEvent) => {
-                    console.log('Model clicked');
-                    clickToDeformModel(event.nativeEvent);
-                }
-            }
-            onPointerDownCapture = {(event: React.PointerEvent) => {
-                    if (raycaster.current) {
-                        const intersects = raycaster.current.intersectObject(obj, true);
-                        if (intersects.length > 0) {
-                            const intersect = intersects[0];
-                            targetMesh.current = intersect.object as THREE.Mesh;
-                            initialGeometry.current = targetMesh.current.geometry.clone();
-                            initialClickPoint.current = intersect.point.clone();
-                            deformationNormal.current = intersect.face?.normal.clone() || null;
-                            if (deformationNormal.current) {
-                                deformationNormal.current.applyMatrix3(
-                                    new THREE.Matrix3().getNormalMatrix(targetMesh.current.matrixWorld)
-                                );
-                            }
-                        }
-                    }
-                }
-            }
         />
       </>
     );
@@ -127,3 +140,27 @@ const Model: React.FC<ModelProps> = ({ modelPaths, onLoad, deformDistance }) => 
 
 export default Model;
 
+
+//            onPointerDown = {(event: React.PointerEvent) => {
+//                    console.log('Model clicked');
+//                    clickToDeformModel(event.nativeEvent);
+//                }
+//            }
+//            onPointerDownCapture = {(event: React.PointerEvent) => {
+//                    if (raycaster.current) {
+//                        const intersects = raycaster.current.intersectObject(obj, true);
+//                        if (intersects.length > 0) {
+//                            const intersect = intersects[0];
+//                            targetMesh.current = intersect.object as THREE.Mesh;
+//                            initialGeometry.current = targetMesh.current.geometry.clone();
+//                            initialClickPoint.current = intersect.point.clone();
+//                            deformationNormal.current = intersect.face?.normal.clone() || null;
+//                            if (deformationNormal.current) {
+//                                deformationNormal.current.applyMatrix3(
+//                                    new THREE.Matrix3().getNormalMatrix(targetMesh.current.matrixWorld)
+//                                );
+//                            }
+//                        }
+//                    }
+//                }
+//            }
