@@ -96,19 +96,41 @@ IS:2
                 at invokeGuardedCallback (chunk-2T23EU2R.js?v=a0783620:10650:39)
 
         3. 那為什麼要加 primitive? 
+        use case: https://www.tabnine.com/code/javascript/classes/react-three-fiber/primitive
 
     @3.Background Knowledge
         a. "<primitive/>" Component
             (property) ThreeElements.primitive: PrimitiveProps
             primitive: PrimitiveProps;
 
-        b. The <primitive /> component is a versatile low-level component in TresJS that allows you to directly use any three.js 
+        b. Putting already existing objects into the scene-graph
+        You can use the primitive placeholder for that. You can still give it properties or attach nodes to it. 
+        Never add the same object multiple times, this is not allowed in three.js! Primitives will not dispose 
+        of the object they carry on unmount, you are responsible for disposing of it!
+
+        - source: https://docs.pmnd.rs/react-three-fiber/api/objects#putting-already-existing-objects-into-the-scene-graph
+
+        c. The <primitive /> component is a versatile low-level component in TresJS that allows you to directly use any three.js 
         object within your Vue application without an abstraction. It acts as a bridge between Vue's reactivity system and 
         THREE's scene graph.
         
-        source: https://docs.tresjs.org/advanced/primitive
+        - source: https://docs.tresjs.org/advanced/primitive
 
+        
     @4.Solution
+        const modelRef = useRef<Mesh>();
+        useBVH(modelRef);
+        ...
+        <mesh ref={modelRef }...
+
+        參考這個沙盒
+        - source: https://codesandbox.io/p/sandbox/drei-mesh-bvh-forked-c2wqfz?file=%2Fsrc%2FApp.js%3A21%2C1
+
+        相關文檔
+        - source: https://github.com/pmndrs/react-three-fiber/issues/320
+        - source: https://github.com/pmndrs/drei#bvh
+        - source: https://drei.pmnd.rs/?path=/story/performance-bvh--default-story
+    
     _
 
 
