@@ -23,6 +23,8 @@ const ThreeCanvas: React.FC<ThreeCanvasProps> = ({ deformDistance, targetRotatio
     const modelPaths = {
         mtl: '.././model/lulu/texturedMesh.mtl',
         obj: '.././model/lulu/texturedMesh.obj',
+//        mtl: '.././model/wes/texturedMesh.mtl',
+//        obj: '.././model/wes/texturedMesh.obj',
     };
   
     return (

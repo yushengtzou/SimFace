@@ -59,8 +59,8 @@ const Scene: React.FC<SceneProps> = ({
                 modelPaths={modelPaths} 
                 onLoad={handleModelLoad} 
                 deformDistance={deformDistance}
-                targetRotation={targetRotation} // Changed from rotation to targetRotation
-                currentRotation={currentRotation} // Added this prop
+                targetRotation={targetRotation} 
+                currentRotation={currentRotation} 
               />
           </Suspense>
           <OrbitControls enableDamping={false} ref={controlsRef} enableZoom={true} minDistance={3} maxDistance={9} zoomSpeed={0.8} />
