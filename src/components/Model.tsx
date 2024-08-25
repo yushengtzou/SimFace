@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { useLoader, useThree, useFrame } from '@react-three/fiber';
+import { useLoader, useThree, useFrame, ThreeEvent } from '@react-three/fiber';
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader';
 import { MTLLoader } from 'three/examples/jsm/loaders/MTLLoader';
 import * as THREE from 'three';
@@ -86,11 +86,11 @@ const Model: React.FC<ModelProps> = ({
     return (
         <group ref={groupRef}>
             <primitive
-              ref={meshRef}
-              object={obj}
-              scale={[6, 6, 6]}
-              position={[0, 5, 12]}
-//              onPointerDown={onPointerDown}
+                ref={meshRef}
+                object={obj}
+                scale={[6, 6, 6]}
+                position={[0, 5, 12]}
+                onPointerDown={onPointerDown}
             />
         </group>
     );
