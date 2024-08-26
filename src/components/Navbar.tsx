@@ -1,9 +1,20 @@
 import React, { useState } from 'react';
 import Info from './dialogs';
-import { Example } from './Drawers';
+import { Drawer } from './Drawers';
 
+interface NavbarProps {
+  onRotateFront: () => void;
+  onRotateLeft: () => void;
+  onRotateRight: () => void;
+  targetRotation: number;
+}
 
-const Navbar: React.FC = () => {
+const Navbar: React.FC<NavbarProps> = ({
+  onRotateFront,
+  onRotateLeft,
+  onRotateRight,
+  targetRotation
+}) => {
   const [showInfo, setShowInfo] = useState(false);
   const [open, setOpen] = useState(false);
 
@@ -20,7 +31,6 @@ const Navbar: React.FC = () => {
             <div className="absolute left-1/2 transform -translate-x-1/2 flex flex-shrink-0 items-center">
               <a href="#" className="font-sans rounded-md px-3 py-2 text-xl font-medium text-gray-900">SimFace</a>
             </div>
-
             {/* Right side items */}
             <div className="ml-auto hidden sm:flex sm:space-x-4">
               <button 
@@ -29,28 +39,30 @@ const Navbar: React.FC = () => {
               >
                 Analysis
               </button>
-
               <button 
                 onClick={() => setShowInfo(prevState => !prevState)}
                 className="rounded-md px-3 py-2 text-base font-normal text-gray-900 hover:bg-gray-200"
               >
                 Info
               </button>
-
               <a href="#" id="uploadLink" className="rounded-md px-3 py-2 text-base font-normal text-gray-900 hover:bg-gray-200">Upload</a>
             </div>
           </div>
         </div>
       </nav>
-
       {/* Render the Info component only when showInfo is true */}
       {showInfo && <Info />}
-
-      {/* Render the Example component for the Analysis drawer */}
-      <Example open={open} setOpen={setOpen} />
+      {/* Render the Drawer component for the Analysis drawer */}
+      <Drawer 
+        open={open} 
+        setOpen={setOpen}
+        onRotateFront={onRotateFront}
+        onRotateLeft={onRotateLeft}
+        onRotateRight={onRotateRight}
+        targetRotation={targetRotation}
+      />
     </>
   );
 };
 
 export default Navbar;
-

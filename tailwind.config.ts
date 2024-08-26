@@ -11,6 +11,8 @@ const config: Config = {
       colors: {
         primary: '#1DA1F2',  // 自定義主色
         secondary: '#14171A',  // 自定義次色
+      backgroundColor: {
+        'custom-white': '#F7F7F7',
       },
       fontFamily: {
         sans: ['Graphik', 'sans-serif'],  // 自定義無襯線字體

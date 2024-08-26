@@ -1,7 +1,6 @@
 import React, { useState, useCallback, useRef } from 'react';
 import Navbar from './Navbar';
 import ThreeCanvas from './ThreeCanvas';
-import Panel from './Panel';
 
 const App: React.FC = () => {
     const [deformDistance, setDeformDistance] = useState(10);
@@ -26,18 +25,16 @@ const App: React.FC = () => {
 
     return (
         <div className="h-full flex flex-col">
-            <Navbar />
+            <Navbar 
+                onRotateFront={handleRotateFront}
+                onRotateLeft={handleRotateLeft}
+                onRotateRight={handleRotateRight}
+                targetRotation={targetRotation}
+            />
             <ThreeCanvas 
                 deformDistance={deformDistance} 
                 targetRotation={targetRotation}
                 currentRotation={currentRotation}
-            />
-            <Panel 
-                value={deformDistance} 
-                onChange={handleSliderChange}
-                onRotateFront={handleRotateFront}
-                onRotateLeft={handleRotateLeft}
-                onRotateRight={handleRotateRight}
             />
         </div>
     );
