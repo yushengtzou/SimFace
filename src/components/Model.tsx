@@ -4,10 +4,11 @@ import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader';
 import { MTLLoader } from 'three/examples/jsm/loaders/MTLLoader';
 import * as THREE from 'three';
 import { elevate } from '../tools/deformation/deform';
+import onEuclideanDistance from './util';
 
 /**
  *
- * @description Type Argument for the React.FC "ModelProps". 
+ * @description ModelProps 介面的參數型別 
  *
  */
 interface ModelProps {
@@ -16,44 +17,67 @@ interface ModelProps {
         obj: string; 
     };
     onLoad: () => void;
+
     deformDistance: number;
+
+    // 轉動
     targetRotation: number;
     currentRotation: React.MutableRefObject<number>;
+
+    // 歐氏距離 Euclidean Distance
+    enableEuclidean: boolean;
 }
 
 /**
  *
- * @description The functional components for loading the model, constructing the scene, setting the camera and containing hooks for transforming the model view and doing deformation. 
+ * @description 載入模型、建構場景、設置相機、改變相機視角、形變 
  *
  */
 const Model: React.FC<ModelProps> = ({ 
         modelPaths, 
         onLoad, 
+
         deformDistance, 
+
+        // 轉動
         targetRotation, 
-        currentRotation 
+        currentRotation, 
+
+        // 歐氏距離 Euclidean Distance
+        enableEuclidean
     }) => {
-    // Declare "meshRef" variable: the reference for mesh.
+
+    // --------------------------------------------------------------
+    // 狀態變數宣告
+    // --------------------------------------------------------------
+
+    // mesh 的參照
     const meshRef = useRef<THREE.Object3D | null>(null);
-    // Declare "groupRef" variable: the reference for group.
+    // group 的參照
     const groupRef = useRef<THREE.Group>(null);
-    // Declare "raycaster" variable: the reference for raycaster.
+    // raycaster 的參照
     const raycaster = useRef(new THREE.Raycaster());
     const { scene, camera: defaultCamera } = useThree();
     
-    // Declare "mtl" variable: to load the textures of the model.
+    // 載入模型的紋理 
     const mtl = useLoader(MTLLoader, modelPaths.mtl);
-    // Declare "obj" variable: to load the geometry of the model and paint the loaded textures on it.
+    // 載入模型 
     const obj = useLoader(OBJLoader, modelPaths.obj, (loader: OBJLoader) => {
         loader.setMaterials(mtl);
     });
 
-    // Declare "camera" variable: to set the defaultCamera as perspective camera.
+    // Set the defaultCamera as perspective camera
     const camera = defaultCamera as THREE.PerspectiveCamera;
-    // Declare "clickToDeformModel" variable: to load the imported "elevate" function as clickToDeformModel function.
+    // Load the imported "elevate" function as clickToDeformModel function
     const clickToDeformModel = elevate(raycaster.current, scene, camera);
 
-    // Declare the hook function: to print out the model info when the model was loaded.
+
+    // --------------------------------------------------------------
+    // 函式宣告與實作
+    // --------------------------------------------------------------
+
+
+    // 列印模型資訊 
     useEffect(() => {
         if (obj) {
             onLoad();
@@ -67,7 +91,7 @@ const Model: React.FC<ModelProps> = ({
         }
     }, [obj, onLoad]);
 
-    // Declare the hook function: to transform the model views.
+    // 轉換相機視角 
     useFrame((state, delta) => {
         if (groupRef.current) {
             // Smooth rotation
@@ -76,13 +100,19 @@ const Model: React.FC<ModelProps> = ({
         }
     });
 
-    // Declare the "onPointerDown" arrow function: to deform the model when the mouse click on it.
+    // 形變網目 
     const onPointerDown = (pointEvent: React.PointerEvent) => {
         console.log('Model clicked');
         clickToDeformModel(pointEvent.nativeEvent);
     };
 
-    // Return the "model" and the "group".
+
+    let handleOnPointerDown = () => {
+        return onEuclideanDistance() ? enableEuclidean : onPointerDown();
+
+    }
+
+    // 回傳 model 和 group
     return (
         <group ref={groupRef}>
             <primitive
@@ -90,7 +120,7 @@ const Model: React.FC<ModelProps> = ({
                 object={obj}
                 scale={[6, 6, 6]}
                 position={[0, 5, 12]}
-                onPointerDown={onPointerDown}
+                onPointerDown={handleOnPointerDown}
             />
         </group>
     );

@@ -26,7 +26,6 @@ let deformationNormal: THREE.Vector3 | null = null;
  *
  * @description 依據滑桿值來形變網目的函式
  *
- *
  */
 function deformMesh(point: THREE.Vector3, mesh: THREE.Mesh, normal: THREE.Vector3, deformDist: number) {
     const geometry = mesh.geometry as THREE.BufferGeometry;
@@ -69,7 +68,6 @@ function deformMesh(point: THREE.Vector3, mesh: THREE.Mesh, normal: THREE.Vector
  *
  * @description 形變網目計算的函式
  *
- *
  */
 export function elevate(raycaster: THREE.Raycaster, scene: THREE.Scene, camera: THREE.PerspectiveCamera) {
     return function (event: MouseEvent) {
@@ -80,12 +78,6 @@ export function elevate(raycaster: THREE.Raycaster, scene: THREE.Scene, camera: 
         const found = raycaster.intersectObjects(scene.children);
 
         if (found.length > 0 && (found[0].object as THREE.Mesh).geometry) {
-            const panel = document.getElementById('panel');
-            if (panel) {
-                panel.classList.remove('hidden');
-                panel.classList.add('flex');
-            }
-
             targetMesh = found[0].object as THREE.Mesh;
             initialGeometry = (targetMesh.geometry as THREE.BufferGeometry).clone();
             initialClickPoint = found[0].point.clone();

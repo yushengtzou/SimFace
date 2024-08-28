@@ -3,17 +3,27 @@ import Info from './dialogs';
 import { Drawer } from './Drawers';
 
 interface NavbarProps {
+  // Rotation
   onRotateFront: () => void;
   onRotateLeft: () => void;
   onRotateRight: () => void;
   targetRotation: number;
+
+  // Euclidean Distance
+  enableEuclidean: boolean;
+  handleEuclideanDistance: () => void; 
 }
 
 const Navbar: React.FC<NavbarProps> = ({
+  // Rotation
   onRotateFront,
   onRotateLeft,
   onRotateRight,
-  targetRotation
+  targetRotation,
+
+  // Euclidean Distance
+  enableEuclidean,
+  handleEuclideanDistance
 }) => {
   const [showInfo, setShowInfo] = useState(false);
   const [open, setOpen] = useState(false);
@@ -54,12 +64,19 @@ const Navbar: React.FC<NavbarProps> = ({
       {showInfo && <Info />}
       {/* Render the Drawer component for the Analysis drawer */}
       <Drawer 
+        // Info State
         open={open} 
         setOpen={setOpen}
+
+        // Render
         onRotateFront={onRotateFront}
         onRotateLeft={onRotateLeft}
         onRotateRight={onRotateRight}
         targetRotation={targetRotation}
+
+        // Euclidean Distance
+        enableEuclidean = {enableEuclidean}
+        handleEuclideanDistance = {handleEuclideanDistance}
       />
     </>
   );

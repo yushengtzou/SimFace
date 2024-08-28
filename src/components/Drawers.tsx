@@ -9,26 +9,31 @@ import  AssessmentCard from './cards/Assessment'
 interface DrawerProps {
   open: boolean;
   setOpen: (open: boolean) => void;
-  onRotateFront: () => void;
-  onRotateLeft: () => void;
-  onRotateRight: () => void;
-  targetRotation: number;
-}
 
-interface CameraCardProps {
+  // Rotation
   onRotateFront: () => void;
   onRotateLeft: () => void;
   onRotateRight: () => void;
   targetRotation: number;
+
+  // Euclidean Distance
+  enableEuclidean: boolean;
+  handleEuclideanDistance: () => void; 
 }
 
 export function Drawer({ 
   open, 
   setOpen, 
+
+  // Rotation
   onRotateFront, 
   onRotateLeft, 
   onRotateRight,
-  targetRotation
+  targetRotation,
+
+  // Euclidean Distance
+  enableEuclidean,
+  handleEuclideanDistance
 }: DrawerProps) {
   const handleClose = () => {
     // Do nothing, preventing the drawer from closing on outside clicks
@@ -57,7 +62,7 @@ export function Drawer({
                 leaveTo="translate-x-full"
               >
                 <Dialog.Panel className="pointer-events-auto relative w-screen max-w-sm overflow-y-auto">
-                  <div className="flex h-full flex-col bg-white py-6 shadow-xl">
+                  <div className="flex h-full flex-col bg-white border py-6 shadow-xl">
                     <div className="px-4 sm:px-6">
                       <div className="flex items-start justify-between">
                         <Dialog.Title className="text-lg font-semibold leading-6 text-gray-900">
@@ -91,6 +96,9 @@ export function Drawer({
                               />
                            )  : card === "ASSESSMENT" ? (
                               <AssessmentCard
+                                // Euclidean Distance
+                                enableEuclidean = {enableEuclidean}
+                                handleEuclideanDistance = {handleEuclideanDistance}
                               />
                            )  : (
                               <p className="mt-1 text-sm pt-6 text-gray-600">
