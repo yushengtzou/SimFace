@@ -1,17 +1,14 @@
 import React from 'react';
 
 interface FacelandMarkProps {
-  onRotateFront: () => void;
-  onRotateLeft: () => void;
-  onRotateRight: () => void;
-  targetRotation: number;
+  // Face Landmarks
+  enableFaceLandmarks: boolean;
+  handleFaceLandmarks: () => void; 
 }
 
 const FacelandMarkCard: React.FC<FacelandMarkProps> = ({
-  onRotateFront,
-  onRotateLeft,
-  onRotateRight,
-  targetRotation
+  enableFaceLandmarks,
+  handleFaceLandmarks
 }) => {
   const buttonClass = "bg-white rounded-md px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-200 border transition-colors duration-300";
 
@@ -19,13 +16,12 @@ const FacelandMarkCard: React.FC<FacelandMarkProps> = ({
     <div className="mt-2">
       <div className="flex justify-evenly pt-6 mb-2">
         <button 
-          onClick={onRotateLeft}
-          className={buttonClass}
+          onClick={handleFaceLandmarks}
+          className={`${buttonClass} ${enableFaceLandmarks ? 'bg-gray-200' : ''}`}
         >
           Edit
         </button>
         <button 
-          onClick={onRotateFront}
           className={buttonClass}
         >
           Clear

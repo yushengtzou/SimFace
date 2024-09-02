@@ -10,30 +10,38 @@ interface DrawerProps {
   open: boolean;
   setOpen: (open: boolean) => void;
 
+  // Face Landmarks
+  enableFaceLandmarks: boolean;
+  handleFaceLandmarks: () => void; 
+
+  // Euclidean Distance
+  enableEuclidean: boolean;
+  handleEuclideanDistance: () => void; 
+
   // Rotation
   onRotateFront: () => void;
   onRotateLeft: () => void;
   onRotateRight: () => void;
   targetRotation: number;
-
-  // Euclidean Distance
-  enableEuclidean: boolean;
-  handleEuclideanDistance: () => void; 
 }
 
 export function Drawer({ 
   open, 
   setOpen, 
 
+  // Face Landmarks
+  enableFaceLandmarks,
+  handleFaceLandmarks, 
+
+  // Euclidean Distance
+  enableEuclidean,
+  handleEuclideanDistance,
+
   // Rotation
   onRotateFront, 
   onRotateLeft, 
   onRotateRight,
-  targetRotation,
-
-  // Euclidean Distance
-  enableEuclidean,
-  handleEuclideanDistance
+  targetRotation
 }: DrawerProps) {
   const handleClose = () => {
     // Do nothing, preventing the drawer from closing on outside clicks
@@ -93,6 +101,9 @@ export function Drawer({
                               />
                            )  : card === "FACE LANDMARKS & CENTERING" ? (
                               <FacelandMarkCard
+                                // Face Landmarks
+                                enableFaceLandmarks = {enableFaceLandmarks}
+                                handleFaceLandmarks = {handleFaceLandmarks}  
                               />
                            )  : card === "ASSESSMENT" ? (
                               <AssessmentCard

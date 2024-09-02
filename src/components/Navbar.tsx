@@ -3,27 +3,35 @@ import Info from './dialogs';
 import { Drawer } from './Drawers';
 
 interface NavbarProps {
+  // Face Landmarks
+  enableFaceLandmarks: boolean;
+  handleFaceLandmarks: () => void; 
+
+  // Euclidean Distance
+  enableEuclidean: boolean;
+  handleEuclideanDistance: () => void; 
+
   // Rotation
   onRotateFront: () => void;
   onRotateLeft: () => void;
   onRotateRight: () => void;
   targetRotation: number;
-
-  // Euclidean Distance
-  enableEuclidean: boolean;
-  handleEuclideanDistance: () => void; 
 }
 
 const Navbar: React.FC<NavbarProps> = ({
+  // Face Landmarks
+  enableFaceLandmarks,
+  handleFaceLandmarks, 
+
+  // Euclidean Distance
+  enableEuclidean,
+  handleEuclideanDistance,
+
   // Rotation
   onRotateFront,
   onRotateLeft,
   onRotateRight,
-  targetRotation,
-
-  // Euclidean Distance
-  enableEuclidean,
-  handleEuclideanDistance
+  targetRotation
 }) => {
   const [showInfo, setShowInfo] = useState(false);
   const [open, setOpen] = useState(false);
@@ -68,15 +76,19 @@ const Navbar: React.FC<NavbarProps> = ({
         open={open} 
         setOpen={setOpen}
 
+        // Face Landmarks
+        enableFaceLandmarks = {enableFaceLandmarks}
+        handleFaceLandmarks = {handleFaceLandmarks}  
+
+        // Euclidean Distance
+        enableEuclidean = {enableEuclidean}
+        handleEuclideanDistance = {handleEuclideanDistance}
+
         // Render
         onRotateFront={onRotateFront}
         onRotateLeft={onRotateLeft}
         onRotateRight={onRotateRight}
         targetRotation={targetRotation}
-
-        // Euclidean Distance
-        enableEuclidean = {enableEuclidean}
-        handleEuclideanDistance = {handleEuclideanDistance}
       />
     </>
   );

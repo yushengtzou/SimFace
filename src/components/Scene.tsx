@@ -14,12 +14,15 @@ interface SceneProps {
 
     deformDistance: number;
 
-    // Rotation
-    targetRotation: number; 
-    currentRotation: React.MutableRefObject<number>;
+    // Face Landmarks
+    enableFaceLandmarks: boolean;
 
     // Euclidean Distance
     enableEuclidean: boolean;
+
+    // Rotation
+    targetRotation: number; 
+    currentRotation: React.MutableRefObject<number>;
 }
 
 const Scene: React.FC<SceneProps> = ({ 
@@ -28,12 +31,15 @@ const Scene: React.FC<SceneProps> = ({
 
     deformDistance, 
 
-    // Rotation
-    targetRotation,
-    currentRotation, 
+    // Face Landmarks
+    enableFaceLandmarks,
 
     // Euclidean Distance
-    enableEuclidean
+    enableEuclidean,
+
+    // Rotation
+    targetRotation,
+    currentRotation 
 }) => {
     const { camera, gl } = useThree();
     const controlsRef = useRef<any>(null);
@@ -113,10 +119,16 @@ const Scene: React.FC<SceneProps> = ({
                 <Model 
                   modelPaths = {modelPaths} 
                   onLoad = {handleModelLoad} 
+
+                  // Face Landmarks
+                  enableFaceLandmarks = {enableFaceLandmarks}
+
+                  enableEuclidean = {enableEuclidean}
+
                   deformDistance = {deformDistance}
+
                   targetRotation = {targetRotation} 
                   currentRotation = {currentRotation} 
-                  enableEuclidean = {enableEuclidean}
                 />
             </Suspense>
             <OrbitControls enableDamping={false} ref={controlsRef} enableZoom={true} minDistance={3} maxDistance={9} zoomSpeed={0.8} />

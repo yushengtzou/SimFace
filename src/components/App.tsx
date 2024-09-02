@@ -9,16 +9,37 @@ const App: React.FC = () => {
     
     const [deformDistance, setDeformDistance] = useState(10);
 
-    // 轉動模型所需要的狀態變數 Rotation State
-    const [targetRotation, setTargetRotation] = useState(0);
-    const currentRotation = useRef(0);
+    // 面部特徵點所需要的啟動狀態變數 enableFaceLandmarks State
+    const [enableFaceLandmarks, setFaceLandmarks] = useState(false);
 
     // 計算歐氏距離所需要的啟動狀態變數 enableEuclidean State
     const [enableEuclidean, setEuclidean] = useState(false);
 
+    // 轉動模型所需要的狀態變數 Rotation State
+    const [targetRotation, setTargetRotation] = useState(0);
+    const currentRotation = useRef(0);
+
     // --------------------------------------------------------------
     // 函式宣告與實作
     // --------------------------------------------------------------
+
+    // Face Landmarks
+    const handleFaceLandmarks = useCallback(() => {
+      setFaceLandmarks(prevState => !prevState);
+      if (!enableFaceLandmarks) {
+        console.log("onFaceLandmarks() enabled: ", !enableFaceLandmarks);
+      }
+    }, []);
+
+
+    // 處理 Euclidean Distance 狀態的函式 handleEuclideanClick() 
+    const handleEuclideanClick = useCallback(() => {
+      setEuclidean(prevState => !prevState);
+      if (!enableEuclidean) {
+        console.log("onEuclideanDistance() enabled: ", !enableEuclidean);
+      }
+    }, []);
+
 
     // Deformation slider change useCallback() function 
     const handleSliderChange = useCallback((value: number) => {
@@ -38,40 +59,36 @@ const App: React.FC = () => {
     }, []);
 
 
-    // 處理 Euclidean Distance 狀態的函式 handleEuclideanClick() 
-    const handleEuclideanClick = useCallback(() => {
-      setEuclidean(prevState => !prevState);
-      if (!enableEuclidean) {
-        console.log("onEuclideanDistance() enabled: ", !enableEuclidean);
-      }
-    }, []);
-
-
-
-
     return (
         <div className="h-full flex flex-col">
             <Navbar 
+                // Face Landmarks
+                enableFaceLandmarks = {enableFaceLandmarks}
+                handleFaceLandmarks = {handleFaceLandmarks} 
+
+                // Euclidean Distance
+                enableEuclidean = {enableEuclidean}
+                handleEuclideanDistance = {handleEuclideanClick} 
+
                 // Rotation
                 onRotateFront = {handleRotateFront}
                 onRotateLeft = {handleRotateLeft}
                 onRotateRight = {handleRotateRight}
                 targetRotation = {targetRotation}
-
-                // Euclidean Distance
-                enableEuclidean = {enableEuclidean}
-                handleEuclideanDistance = {handleEuclideanClick} 
             />
             <ThreeCanvas 
-                // Rotation
-                targetRotation={targetRotation}
-                currentRotation={currentRotation}
+                // Face Landmarks
+                enableFaceLandmarks = {enableFaceLandmarks}
 
                 // Euclidean Distance
                 enableEuclidean = {enableEuclidean}
 
                 // Deformation
                 deformDistance={deformDistance} 
+
+                // Rotation
+                targetRotation={targetRotation}
+                currentRotation={currentRotation}
             />
         </div>
     );

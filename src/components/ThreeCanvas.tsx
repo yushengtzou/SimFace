@@ -5,7 +5,10 @@ import { Vector3 } from 'three';
 import Scene from './Scene';
 
 interface ThreeCanvasProps {
-  // Rotation
+  // Face Landmarks
+  enableFaceLandmarks: boolean;
+
+    // Rotation
   deformDistance: number;
   targetRotation: number; // Changed from rotation to targetRotation
   currentRotation: React.MutableRefObject<number>; // Added this prop
@@ -24,12 +27,15 @@ interface ThreeCanvasProps {
 const ThreeCanvas: React.FC<ThreeCanvasProps> = ({ 
     deformDistance, 
 
-    // Rotation
-    targetRotation, 
-    currentRotation, 
+    // Face Landmarks
+    enableFaceLandmarks,
 
     // Euclidean Distance
-    enableEuclidean
+    enableEuclidean,
+
+    // Rotation
+    targetRotation, 
+    currentRotation 
 }) => {
     const cameraPosition = new Vector3(-1, 6, 6);
     const backgroundColor = '#f3f4f6';
@@ -50,12 +56,15 @@ const ThreeCanvas: React.FC<ThreeCanvasProps> = ({
 
               deformDistance = {deformDistance} 
 
-              // Rotation 
-              targetRotation = {targetRotation} 
-              currentRotation = {currentRotation} 
+              // Face Landmarks
+              enableFaceLandmarks = {enableFaceLandmarks}
 
               // Euclidean Distance
               enableEuclidean = {enableEuclidean}
+
+              // Rotation 
+              targetRotation = {targetRotation} 
+              currentRotation = {currentRotation} 
             />
         </Canvas>
     );
