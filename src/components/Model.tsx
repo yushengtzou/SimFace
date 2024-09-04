@@ -1,9 +1,11 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback} from 'react';
 import { useLoader, useThree, useFrame } from '@react-three/fiber';
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader';
 import { MTLLoader } from 'three/examples/jsm/loaders/MTLLoader';
 import * as THREE from 'three';
 import { elevate } from '../tools/deformation/deform';
+import { ThreeEvent } from '@react-three/fiber';
+import { PerformanceMonitor } from '@react-three/drei';
 import onEuclideanDistance from './util';
 
 /**
@@ -48,7 +50,7 @@ const Model: React.FC<ModelProps> = ({
     // 定義 raycaster 的參照，用於實現滑鼠射線投射
     const raycaster = useRef(new THREE.Raycaster());
     // 使用 useThree Hook 取得場景和相機的控制權
-    const { scene, camera: defaultCamera } = useThree();
+    const { scene, camera: defaultCamera, gl } = useThree();
 
     // 載入模型的材質檔案
     const mtl = useLoader(MTLLoader, modelPaths.mtl);
@@ -62,6 +64,7 @@ const Model: React.FC<ModelProps> = ({
     // 使用預先定義的 elevate 函式來實作模型的形變操作
     const clickToDeformModel = elevate(raycaster.current, scene, camera);
 
+    const [isPointerDown, setIsPointerDown] = useState(false);
     // 定義狀態變數來儲存使用者選擇的點
     const [selectedPoints, setSelectedPoints] = useState<THREE.Vector3[]>([]);
     // 定義狀態變數來儲存計算得到的歐氏距離
@@ -117,8 +120,13 @@ const Model: React.FC<ModelProps> = ({
 
         // 創建材質並將其應用到精靈上
         const texture = new THREE.CanvasTexture(canvas);
-        const spriteMaterial = new THREE.SpriteMaterial({ map: texture });
+        const spriteMaterial = new THREE.SpriteMaterial({
+            map: texture,
+            depthTest: false,  // Add this line
+//            depthWrite: false  // Add this line
+        });
         const sprite = new THREE.Sprite(spriteMaterial);
+//        sprite.renderOrder = 999;  // Add this line
 
         sprite.scale.set(1, 0.5, 1);  // 設定精靈的縮放比例
         return sprite;
@@ -136,7 +144,7 @@ const Model: React.FC<ModelProps> = ({
      * @description 處理滑鼠點擊事件，計算兩點之間的歐氏距離，並顯示直線和距離
      * @param event 滑鼠點擊事件
      */
-    const handleClick = (event: React.PointerEvent) => {
+    const handleClickEuclideanDistance = (event: ThreeEvent<PointerEvent>) => {
         if (!enableEuclidean) return;
 
         const { clientX, clientY } = event.nativeEvent;
@@ -227,6 +235,35 @@ const Model: React.FC<ModelProps> = ({
         }
     });
 
+    const handlePointerDown = useCallback((event: ThreeEvent<PointerEvent>) => {
+      if (enableFaceLandmarks) {
+        clickToDeformModel(event);
+      } else {
+        handleClickEuclideanDistance(event);
+      }
+    }, [enableFaceLandmarks, clickToDeformModel, handleClickEuclideanDistance]);
+
+
+//    const handlePointerDown = useCallback((event: ThreeEvent<PointerEvent>) => {
+//         setIsPointerDown(true);
+//         if (enableFaceLandmarks) {
+//             elevate(raycaster.current, scene, camera)(event.nativeEvent);
+//         } else {
+//             handleClickEuclideanDistance(event);
+//         }
+//     }, [enableFaceLandmarks, scene, camera, handleClickEuclideanDistance]);
+// 
+//     const handlePointerMove = useCallback((event: ThreeEvent<PointerEvent>) => {
+//         if (isPointerDown && enableFaceLandmarks) {
+//             elevate(raycaster.current, scene, camera)(event.nativeEvent);
+//         }
+//     }, [isPointerDown, enableFaceLandmarks, scene, camera]);
+// 
+//     const handlePointerUp = useCallback(() => {
+//         setIsPointerDown(false);
+//     }, []);
+
+
     return (
         <group ref={groupRef}>
             <primitive
@@ -234,7 +271,10 @@ const Model: React.FC<ModelProps> = ({
                 object={obj}
                 scale={[6, 6, 6]}
                 position={[0, 5, 12]}
-                onPointerDown={enableFaceLandmarks ? clickToDeformModel : handleClick}  // 根據是否啟用臉部標記功能決定使用哪個函式
+//                onPointerDown={handlePointerDown} 
+//                onPointerMove={handlePointerMove} 
+//                onPointerUp={handlePointerUp}
+                onPointerDown={handlePointerDown}  // 根據是否啟用臉部標記功能決定使用哪個函式
             />
         </group>
     );
