@@ -93,6 +93,8 @@ const Scene: React.FC<SceneProps> = ({
                 enableDamping={false} 
                 enableZoom={true} 
                 zoomSpeed={1} 
+                maxDistance={60}
+                minDistance={15}
             />
         </>
     );
