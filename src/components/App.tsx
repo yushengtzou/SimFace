@@ -1,6 +1,7 @@
 import React, { useState, useCallback, useRef } from 'react';
 import Navbar from './Navbar';
 import ThreeCanvas from './ThreeCanvas';
+import * as THREE from 'three';
 
 const App: React.FC = () => {
     // --------------------------------------------------------------
@@ -55,15 +56,19 @@ const App: React.FC = () => {
       }
     }, []);
 
+
     // 4. 轉動模型的回調函式 Rotation useCallback() function 
+    const degrees = 77;
+    const radians = THREE.MathUtils.degToRad(degrees);
+
     const handleRotateFront = useCallback(() => {
         setTargetRotation(0);
     }, []);
     const handleRotateLeft = useCallback(() => {
-        setTargetRotation(-Math.PI / 2); // -90 degrees in radians
+        setTargetRotation(-radians); // -90 degrees in radians
     }, []);
     const handleRotateRight = useCallback(() => {
-        setTargetRotation(Math.PI / 2); // 90 degrees in radians
+        setTargetRotation(radians); // 90 degrees in radians
     }, []);
 
 

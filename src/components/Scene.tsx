@@ -43,11 +43,12 @@ const Scene: React.FC<SceneProps> = ({
     const { camera, gl, scene } = useThree();
     const cameraRef = useRef<THREE.PerspectiveCamera>(null);
 
+    // 相機位置
     useEffect(() => {
-      camera.position.set(0, 0, 26);
+      camera.position.set(0, 0, 24);
     }, [camera]);
 
-    // 相機設置
+    // 相機參數設置
     useEffect(() => {
         const newCamera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
         newCamera.position.copy(cameraPosition);
@@ -55,7 +56,7 @@ const Scene: React.FC<SceneProps> = ({
         scene.camera = newCamera;
     }, [scene, cameraPosition]);
 
-    // 每幀更新函數
+    // 每幀更新函式
     useFrame(() => {
         gl.setSize(window.innerWidth, window.innerHeight);
         if (cameraRef.current) {
@@ -74,7 +75,7 @@ const Scene: React.FC<SceneProps> = ({
             <ambientLight intensity={6.0} />
             <Suspense fallback={
                 <Html center>
-                    <div style={{ color: 'black', fontSize: '20px' }}>Loading...</div>
+                    <div style={{ color: 'black', fontSize: '24px' }}>Loading...</div>
                 </Html>
             }>
                 <Model 
