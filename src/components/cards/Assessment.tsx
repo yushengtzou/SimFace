@@ -16,7 +16,7 @@ const AssessmentCard: React.FC<AssessmentProps> = ({
 
   return (
     <div className="mt-2">
-      <div className="flex flex-col pt-6 mb-2">
+      <div className="flex flex-col pt-3 mb-2">
         <button 
           onClick={handleEuclideanDistance}
           className={`${buttonClass} ${enableEuclidean ? 'bg-gray-200' : ''}`}

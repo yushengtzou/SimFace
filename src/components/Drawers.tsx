@@ -4,21 +4,28 @@ import { XMarkIcon } from '@heroicons/react/24/outline'
 import  CameraCard  from './cards/CameraCard'
 import  FacelandMarkCard from './cards/FacelandMark'
 import  AssessmentCard from './cards/Assessment'
+import  SculptorCard from './cards/Sculptor'
 
 
 interface DrawerProps {
   open: boolean;
   setOpen: (open: boolean) => void;
 
-  // Face Landmarks
+  // 1. Face Landmarks
   enableFaceLandmarks: boolean;
   handleFaceLandmarks: () => void; 
 
-  // Euclidean Distance
+  // 2. Euclidean Distance
   enableEuclidean: boolean;
   handleEuclideanDistance: () => void; 
 
-  // Rotation
+  // 3. Face Sculptor 
+  enableTzouBrush: boolean;
+  handleTzouBrush: () => void; 
+  radius: number;
+  handleRadiusChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+
+  // 4. Rotation
   onRotateFront: () => void;
   onRotateLeft: () => void;
   onRotateRight: () => void;
@@ -29,15 +36,21 @@ export function Drawer({
   open, 
   setOpen, 
 
-  // Face Landmarks
+  // 1. Face Landmarks
   enableFaceLandmarks,
   handleFaceLandmarks, 
 
-  // Euclidean Distance
+  // 2. Euclidean Distance
   enableEuclidean,
   handleEuclideanDistance,
 
-  // Rotation
+  // 3. Face Sculptor
+  enableTzouBrush,
+  handleTzouBrush,
+  radius,
+  handleRadiusChange,
+
+  // 4. Rotation
   onRotateFront, 
   onRotateLeft, 
   onRotateRight,
@@ -110,6 +123,14 @@ export function Drawer({
                                 // Euclidean Distance
                                 enableEuclidean = {enableEuclidean}
                                 handleEuclideanDistance = {handleEuclideanDistance}
+                              />
+                           )  : card === "FACE SCULPTOR" ? (
+                              <SculptorCard
+                                // Effect Distance
+                                enableTzouBrush = {enableTzouBrush}
+                                handleTzouBrush = {handleTzouBrush}
+                                rangeValue={radius}
+                                handleRadiusChange = {handleRadiusChange}
                               />
                            )  : (
                               <p className="mt-1 text-sm pt-6 text-gray-600">

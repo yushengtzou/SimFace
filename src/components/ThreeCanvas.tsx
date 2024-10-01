@@ -5,16 +5,20 @@ import { Vector3 } from 'three';
 import Scene from './Scene';
 
 interface ThreeCanvasProps {
-  // Face Landmarks
+  // 1. Face Landmarks
   enableFaceLandmarks: boolean;
 
-    // Rotation
-  deformDistance: number;
+  // 2. Euclidean Distance
+  enableEuclidean: boolean;
+
+  // 3. Face Sculptor 
+  enableTzouBrush: boolean;
+  radius: number;
+
+  // 4. Rotation
   targetRotation: number; // Changed from rotation to targetRotation
   currentRotation: React.MutableRefObject<number>; // Added this prop
 
-  // Euclidean Distance
-  enableEuclidean: boolean;
 }
 
 /**
@@ -25,25 +29,27 @@ interface ThreeCanvasProps {
  *
  */
 const ThreeCanvas: React.FC<ThreeCanvasProps> = ({ 
-    deformDistance, 
-
-    // Face Landmarks
+    // 1. Face Landmarks
     enableFaceLandmarks,
 
-    // Euclidean Distance
+    // 2. Euclidean Distance
     enableEuclidean,
 
-    // Rotation
+    // 3. Face Sculptor
+    enableTzouBrush,
+    radius,
+
+    // 4. Rotation
     targetRotation, 
     currentRotation 
 }) => {
     const cameraPosition = new Vector3(-1, 6, 6);
     const backgroundColor = '#f3f4f6';
     const modelPaths = {
-        mtl: '.././model/lulu/texturedMesh.mtl',
-        obj: '.././model/lulu/texturedMesh.obj',
-//        mtl: '.././model/wes/texturedMesh.mtl',
-//        obj: '.././model/wes/texturedMesh.obj',
+       mtl: '.././model/lulu/rescale/texturedMesh.mtl',
+       obj: '.././model/lulu/rescale/texturedMesh.obj',
+//       mtl: '.././model/wes/texturedMesh.mtl',
+//       obj: '.././model/wes/texturedMesh.obj',
     };
   
     return (
@@ -54,15 +60,17 @@ const ThreeCanvas: React.FC<ThreeCanvasProps> = ({
               backgroundColor = {backgroundColor} 
               modelPaths = {modelPaths} 
 
-              deformDistance = {deformDistance} 
-
-              // Face Landmarks
+              // 1. Face Landmarks
               enableFaceLandmarks = {enableFaceLandmarks}
 
-              // Euclidean Distance
+              // 2. Euclidean Distance
               enableEuclidean = {enableEuclidean}
 
-              // Rotation 
+              // 3. Face Sculptor
+              enableTzouBrush = {enableTzouBrush}
+              radius = {radius}
+
+              // 4. Rotation 
               targetRotation = {targetRotation} 
               currentRotation = {currentRotation} 
             />

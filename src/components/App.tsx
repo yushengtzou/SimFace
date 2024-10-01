@@ -7,15 +7,21 @@ const App: React.FC = () => {
     // 狀態變數宣告
     // --------------------------------------------------------------
     
-    const [deformDistance, setDeformDistance] = useState(10);
-
-    // 面部特徵點所需要的啟動狀態變數 enableFaceLandmarks State
+    // 1. 面部特徵點所需要的啟動狀態變數 enableFaceLandmarks State
     const [enableFaceLandmarks, setFaceLandmarks] = useState(false);
 
-    // 計算歐氏距離所需要的啟動狀態變數 enableEuclidean State
+    // 2. 計算歐氏距離所需要的啟動狀態變數 enableEuclidean State
     const [enableEuclidean, setEuclidean] = useState(false);
 
-    // 轉動模型所需要的狀態變數 Rotation State
+    // 3. Face Sculptor
+    const [enableTzouBrush, setTzouBrush] = useState(false);
+    // Range Slider Value
+    const [radius, setRadius] = useState(5);
+    const handleRadiusChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+        setRadius(Number(event.target.value));
+    }, []);
+
+    // 4. 轉動模型所需要的狀態變數 Rotation State
     const [targetRotation, setTargetRotation] = useState(0);
     const currentRotation = useRef(0);
 
@@ -23,7 +29,7 @@ const App: React.FC = () => {
     // 函式宣告與實作
     // --------------------------------------------------------------
 
-    // Face Landmarks
+    // 1. Face Landmarks
     const handleFaceLandmarks = useCallback(() => {
       setFaceLandmarks(prevState => !prevState);
       if (!enableFaceLandmarks) {
@@ -32,7 +38,7 @@ const App: React.FC = () => {
     }, []);
 
 
-    // 處理 Euclidean Distance 狀態的函式 handleEuclideanClick() 
+    // 2. 處理 Euclidean Distance 狀態的函式 handleEuclideanClick() 
     const handleEuclideanClick = useCallback(() => {
       setEuclidean(prevState => !prevState);
       if (!enableEuclidean) {
@@ -41,13 +47,15 @@ const App: React.FC = () => {
     }, []);
 
 
-    // Deformation slider change useCallback() function 
-    const handleSliderChange = useCallback((value: number) => {
-        setDeformDistance(value);
+    // 3. Face Sculptor 
+    const handleTzouBrush = useCallback(() => {
+      setTzouBrush(prevState => !prevState);
+      if (!enableTzouBrush) {
+        console.log("onTzouBrush() enabled: ", !enableTzouBrush);
+      }
     }, []);
 
-
-    // 轉動模型的回調函式 Rotation useCallback() function 
+    // 4. 轉動模型的回調函式 Rotation useCallback() function 
     const handleRotateFront = useCallback(() => {
         setTargetRotation(0);
     }, []);
@@ -62,31 +70,39 @@ const App: React.FC = () => {
     return (
         <div className="h-full flex flex-col">
             <Navbar 
-                // Face Landmarks
+                // 1. Face Landmarks
                 enableFaceLandmarks = {enableFaceLandmarks}
                 handleFaceLandmarks = {handleFaceLandmarks} 
 
-                // Euclidean Distance
+                // 2. Euclidean Distance
                 enableEuclidean = {enableEuclidean}
                 handleEuclideanDistance = {handleEuclideanClick} 
 
-                // Rotation
+                // 3. Face Sculptor
+                enableTzouBrush = {enableTzouBrush}
+                handleTzouBrush = {handleTzouBrush}
+                // The Slider Bar Part
+                radius = {radius}
+                handleRadiusChange = {handleRadiusChange}
+
+                // 4. Rotation
                 onRotateFront = {handleRotateFront}
                 onRotateLeft = {handleRotateLeft}
                 onRotateRight = {handleRotateRight}
                 targetRotation = {targetRotation}
             />
             <ThreeCanvas 
-                // Face Landmarks
+                // 1. Face Landmarks
                 enableFaceLandmarks = {enableFaceLandmarks}
 
-                // Euclidean Distance
+                // 2. Euclidean Distance
                 enableEuclidean = {enableEuclidean}
 
-                // Deformation
-                deformDistance={deformDistance} 
+                // 3. Deformation
+                enableTzouBrush = {enableTzouBrush}
+                radius = {radius}
 
-                // Rotation
+                // 4. Rotation
                 targetRotation={targetRotation}
                 currentRotation={currentRotation}
             />
