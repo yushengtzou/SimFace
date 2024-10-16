@@ -199,6 +199,8 @@ const Model: React.FC<ModelProps> = ({
           sprite.position.copy(midPoint);
           scene.add(sprite);
           textRef.current = sprite;
+          console.log(updatedPoints[0]);
+          console.log(updatedPoints[1]);
 
           return [];
         }
